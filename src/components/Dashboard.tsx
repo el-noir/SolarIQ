@@ -1,6 +1,7 @@
-import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal } from 'lucide-react';
+import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock } from 'lucide-react';
 import { SolarData, Language } from '@/types';
 import { motion } from 'motion/react';
+import SolarScheduler from './SolarScheduler';
 
 interface DashboardProps {
   data: SolarData | null;
@@ -177,6 +178,14 @@ export default function Dashboard({ data, language, onRateChange }: DashboardPro
             </div>
           </div>
         </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.38 }}
+      >
+        <SolarScheduler data={data} language={language} />
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

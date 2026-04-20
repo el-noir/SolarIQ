@@ -11,6 +11,16 @@ export interface SolarData {
   unitRate?: number; // Optional custom unit rate
 }
 
+export interface Installer {
+  name: string;
+  rating: number;
+  reviews: number;
+  certified: boolean;
+  city: string;
+  phone?: string;
+  specialty?: string;
+}
+
 export type Language = 'en' | 'ur';
 
 export interface FinancingOption {

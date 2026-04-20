@@ -4,13 +4,15 @@ import Chat from './components/Chat';
 import Dashboard from './components/Dashboard';
 import ReportView from './components/ReportView';
 import FinancingCalculator from './components/FinancingCalculator';
-import { Sun, LayoutDashboard, FileText, Menu, X, Globe, Landmark } from 'lucide-react';
+import InstallerFinder from './components/InstallerFinder';
+import { Sun, LayoutDashboard, FileText, Menu, X, Globe, Landmark, ShieldCheck } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [solarData, setSolarData] = useState<SolarData | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'report' | 'financing'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'report' | 'financing' | 'installers'>('dashboard');
+  const [installerSearch, setInstallerSearch] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
   const [customUnitRate, setCustomUnitRate] = useState<number>(45);
@@ -32,6 +34,7 @@ export default function App() {
   const navItems = [
     { id: 'dashboard', label: language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard', icon: LayoutDashboard },
     { id: 'financing', label: language === 'ur' ? 'فنانسنگ' : 'Installments', icon: Landmark },
+    { id: 'installers', label: language === 'ur' ? 'انسٹالرز' : 'Installers', icon: ShieldCheck },
     { id: 'report', label: language === 'ur' ? 'پروپوزل' : 'Proposal', icon: FileText, disabled: !solarData },
   ];
 
@@ -50,6 +53,8 @@ export default function App() {
           onDataUpdate={setSolarData} 
           language={language}
           unitRate={customUnitRate}
+          externalInput={installerSearch}
+          onExternalInputHandled={() => setInstallerSearch(null)}
         />
       </aside>
 
@@ -144,6 +149,23 @@ export default function App() {
                     </h3>
                   </div>
                 )}
+              </motion.div>
+            ) : activeTab === 'installers' ? (
+              <motion.div
+                key="installers"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="h-full"
+              >
+                <InstallerFinder 
+                  data={adjustedData} 
+                  language={language}
+                  isSearching={!!installerSearch}
+                  onSearch={(city) => {
+                    setInstallerSearch(`Find me the top 3 AEDB certified solar installers specifically in ${city}, Pakistan. Please also check their Google ratings and provide their specialties if available.`);
+                  }}
+                />
               </motion.div>
             ) : adjustedData && (
               <motion.div

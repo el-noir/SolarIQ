@@ -9,9 +9,11 @@ interface ChatProps {
   onDataUpdate: (data: SolarData | null) => void;
   language: Language;
   unitRate: number;
+  externalInput?: string | null;
+  onExternalInputHandled?: () => void;
 }
 
-export default function Chat({ onDataUpdate, language, unitRate }: ChatProps) {
+export default function Chat({ onDataUpdate, language, unitRate, externalInput, onExternalInputHandled }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -20,6 +22,18 @@ export default function Chat({ onDataUpdate, language, unitRate }: ChatProps) {
     }
   ]);
   const [input, setInput] = useState('');
+
+  useEffect(() => {
+    if (externalInput) {
+      setInput(externalInput);
+      // We can auto-submit here but it's better to let user see it or just auto-submit if we want seamless flow.
+      // Auto-submit is better for "Find Pros" button.
+      setTimeout(() => {
+         handleSubmit(undefined, externalInput);
+         if (onExternalInputHandled) onExternalInputHandled();
+      }, 100);
+    }
+  }, [externalInput]);
 
   const quickActions = [
     { label: "2x AC (1.5T)", prompt: "I have two 1.5-ton Inverter ACs. How does this affect my system sizing?" },
@@ -37,13 +51,14 @@ export default function Chat({ onDataUpdate, language, unitRate }: ChatProps) {
     }
   }, [messages, isLoading]);
 
-  async function handleSubmit(e?: React.FormEvent) {
+  async function handleSubmit(e?: React.FormEvent, overrideInput?: string) {
     if (e) e.preventDefault();
-    if ((!input.trim() && attachedFiles.length === 0) || isLoading) return;
+    const messageContent = overrideInput || input;
+    if ((!messageContent.trim() && attachedFiles.length === 0) || isLoading) return;
 
     const userMessage: Message = {
       role: 'user',
-      content: input,
+      content: messageContent,
       timestamp: Date.now()
     };
 
@@ -55,7 +70,7 @@ export default function Chat({ onDataUpdate, language, unitRate }: ChatProps) {
 
     try {
       const chatHistory = messages.map(m => ({ role: m.role, content: m.content }));
-      chatHistory.push({ role: 'user', content: input });
+      chatHistory.push({ role: 'user', content: messageContent });
 
       const filesForGemini = currentFiles.map(f => ({
         mimeType: f.type,

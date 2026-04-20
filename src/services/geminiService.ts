@@ -48,6 +48,8 @@ GROUNDING & RISK FACTORS (2026):
 1. SMOG IMPACT: For cities in Punjab (Lahore, Faisalabad, Gujranwala), specifically mention the "Smog Yield Drop" (approx 30% reduction in production from Nov-Jan) and adjust your annual ROI estimates accordingly.
 2. NET-METERING POLICY: Mention that NEPRA is considering a transition to Gross-Metering. Advise users that current 1:1 rates are a "Policy Window" that may change, making larger batteries (Hybrid systems) more attractive for future-proofing.
 3. FINANCING: If the user asks about affordability, refer them to the "Installments" tab which uses current KIBOR-linked rates from Meezan Bank and Bank Alfalah.
+4. SCHEDULING: Advise users to use high-wattage appliances (Pump, Iron, AC) during the "Golden Hours" (10 AM - 3 PM) as shown in their Dashboard's Yield Scheduler.
+5. AEDB INSTALLERS: When asked to find AEDB certified installers for a city, use googleSearch to find the latest official list or verified vendors. Provide their names, ratings, and contact info if available. Emphasize that these installers are authorized for net-metering.
 `;
 
 export async function chatWithSolarIQ(messages: any[], files: { mimeType: string; data: string }[] = [], language: string = 'en', unitRate: number = 45) {
