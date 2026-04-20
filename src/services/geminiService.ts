@@ -170,12 +170,12 @@ export async function chatWithSolarIQ(messages: any[], files: { mimeType: string
         model,
         contents: [
           ...contents,
-          response.candidates[0].content, // The tool call content
+          response.candidates[0].content, // The original tool call message
           {
-            role: "user", // The framework expects tool results as if from user or specific role
+            role: "user", 
             parts: toolResults.map(tr => ({
               functionResponse: {
-                name: response.functionCalls![0].name, // Simplified for 1 tool
+                name: response.functionCalls!.find(fc => (fc as any).id === tr.callId)?.name || "calculateROI",
                 response: tr.content
               }
             }))
@@ -183,7 +183,13 @@ export async function chatWithSolarIQ(messages: any[], files: { mimeType: string
         ],
         config: {
           systemInstruction: SYSTEM_PROMPT,
-          tools: [{ googleSearch: {} }], // Don't need calcs again
+          tools: [
+            { googleSearch: {} },
+            { functionDeclarations: [calculateROIFunction, getWeatherImpactFunction] }
+          ], // Keep tools available in case it needs more info
+          toolConfig: {
+            includeServerSideToolInvocations: true
+          }
         }
       });
     }
