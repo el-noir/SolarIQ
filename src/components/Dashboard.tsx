@@ -1,5 +1,5 @@
-import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock } from 'lucide-react';
-import { SolarData, Language } from '@/types';
+import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock, Settings2, ShieldCheck, Gem } from 'lucide-react';
+import { SolarData, Language, SystemTier } from '@/types';
 import { motion } from 'motion/react';
 import SolarScheduler from './SolarScheduler';
 
@@ -7,6 +7,7 @@ interface DashboardProps {
   data: SolarData | null;
   language: Language;
   onRateChange: (rate: number) => void;
+  onTierChange: (tier: SystemTier) => void;
 }
 
 const translations = {
@@ -32,6 +33,11 @@ const translations = {
     downloadTechnical: "Download Technical Analysis",
     tier1: "Tier 1",
     smartHybrid: "Smart Hybrid",
+    systemConfig: "System Build Tier",
+    economy: "Economy Build",
+    premium: "Premium Build",
+    economyDesc: "Standard Tier-1 P-Type panels + String Inverter. Best for quick ROI.",
+    premiumDesc: "N-Type Bifacial panels + Global Top-Tier Inverter. 10% more yield.",
     panels: "Solar Panels",
     inverter: "Inverter Core",
     dailyYield: "Based on local irradiation levels, this system will generate roughly",
@@ -63,6 +69,11 @@ const translations = {
     downloadTechnical: "ٹیکنیکل رپورٹ ڈاؤن لوڈ کریں",
     tier1: "ٹیئر ۱",
     smartHybrid: "سمارٹ ہائبرڈ",
+    systemConfig: "سسٹم کوالٹی انتخاب",
+    economy: "اکانومی بلڈ",
+    premium: "پریمیم بلڈ",
+    economyDesc: "معیاری ٹیئر ۱ پینلز اور انورٹر۔ کم قیمت میں بہترین بچت۔",
+    premiumDesc: "بائی فیشل پینلز اور برانڈڈ انورٹر۔ ۱۰٪ زیادہ بجلی کی پیداوار۔",
     panels: "سولر پینلز",
     inverter: "انورٹر",
     dailyYield: "مقامی روشنی کی سطح کے مطابق، یہ سسٹم روزانہ تقریباً",
@@ -74,7 +85,7 @@ const translations = {
   }
 };
 
-export default function Dashboard({ data, language, onRateChange }: DashboardProps) {
+export default function Dashboard({ data, language, onRateChange, onTierChange }: DashboardProps) {
   const t = translations[language];
 
   if (!data) {
@@ -148,17 +159,63 @@ export default function Dashboard({ data, language, onRateChange }: DashboardPro
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="bg-ai-bubble/30 p-8 rounded-[32px] border border-sage/10"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
       >
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="max-w-sm">
-             <div className="flex items-center gap-2 mb-2 text-earth">
+        {/* Tier Selector */}
+        <div className="bg-white p-8 rounded-[32px] border border-sage/10 shadow-sm space-y-6">
+           <div className="flex items-center gap-2 mb-4">
+              <Settings2 className="w-5 h-5 text-sun" />
+              <h3 className="font-bold text-lg font-serif text-earth">{t.systemConfig}</h3>
+           </div>
+           
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button 
+                onClick={() => onTierChange('economy')}
+                className={cn(
+                  "p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
+                  data.tier === 'economy' || !data.tier 
+                    ? "border-sage bg-sage/5" 
+                    : "border-transparent bg-bg-natural hover:bg-sage/5"
+                )}
+              >
+                <div className="flex items-center justify-between mb-2 w-full">
+                  <ShieldCheck className={cn("w-5 h-5", data.tier === 'economy' || !data.tier ? "text-sage" : "text-sage/30")} />
+                  <span className="font-black text-earth text-xs uppercase tracking-widest">{t.economy}</span>
+                </div>
+                <p className="text-[10px] text-sage font-medium leading-relaxed opacity-60">
+                  {t.economyDesc}
+                </p>
+              </button>
+
+              <button 
+                onClick={() => onTierChange('premium')}
+                className={cn(
+                  "p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
+                  data.tier === 'premium' 
+                    ? "border-earth bg-earth text-white" 
+                    : "border-transparent bg-bg-natural hover:bg-earth/5"
+                )}
+              >
+                <div className="flex items-center justify-between mb-2 w-full">
+                  <Gem className={cn("w-5 h-5", data.tier === 'premium' ? "text-sun" : "text-earth/30")} />
+                  <span className={cn("font-black text-xs uppercase tracking-widest", data.tier === 'premium' ? "text-white" : "text-earth")}>{t.premium}</span>
+                </div>
+                <p className={cn("text-[10px] font-medium leading-relaxed", data.tier === 'premium' ? "text-white/70" : "text-earth/60")}>
+                  {t.premiumDesc}
+                </p>
+              </button>
+           </div>
+        </div>
+
+        {/* Rate Slider */}
+        <div className="bg-ai-bubble/30 p-8 rounded-[32px] border border-sage/10 flex flex-col justify-center">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 mb-4">
                <SlidersHorizontal className="w-5 h-5 text-sun" />
-               <h3 className="font-bold text-lg font-serif">{t.roiSensitivity}</h3>
-             </div>
-             <p className="text-xs text-sage font-medium opacity-80">{t.impactText}</p>
-          </div>
-          <div className="flex-1 flex flex-col gap-2">
+               <h3 className="font-bold text-lg font-serif text-earth">{t.roiSensitivity}</h3>
+            </div>
+            <p className="text-xs text-sage font-medium opacity-80 mb-4">{t.impactText}</p>
+            
             <div className="flex justify-between items-end mb-1">
                <span className="text-xs font-bold text-earth">{t.adjustRate}</span>
                <span className="text-lg font-black text-earth">PKR {data.unitRate}<span className="text-xs font-normal opacity-60 ml-1">/ unit</span></span>

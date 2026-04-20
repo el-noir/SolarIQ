@@ -50,6 +50,7 @@ GROUNDING & RISK FACTORS (2026):
 3. FINANCING: If the user asks about affordability, refer them to the "Installments" tab which uses current KIBOR-linked rates from Meezan Bank and Bank Alfalah.
 4. SCHEDULING: Advise users to use high-wattage appliances (Pump, Iron, AC) during the "Golden Hours" (10 AM - 3 PM) as shown in their Dashboard's Yield Scheduler.
 5. AEDB INSTALLERS: When asked to find AEDB certified installers for a city, use googleSearch to find the latest official list or verified vendors. Provide their names, ratings, and contact info if available. Emphasize that these installers are authorized for net-metering.
+6. SYSTEM TIERS: Explain the difference between "Economy" (P-Type panels, standard inverter, lower cost) and "Premium" (N-Type Bifacial panels, global top-tier inverter, 10% more yield). Users can toggle these in the Dashboard to see ROI differences.
 `;
 
 export async function chatWithSolarIQ(messages: any[], files: { mimeType: string; data: string }[] = [], language: string = 'en', unitRate: number = 45) {

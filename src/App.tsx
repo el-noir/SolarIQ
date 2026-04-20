@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { SolarData, Language } from './types';
+import { SolarData, Language, SystemTier } from './types';
 import Chat from './components/Chat';
 import Dashboard from './components/Dashboard';
 import ReportView from './components/ReportView';
@@ -16,20 +16,35 @@ export default function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
   const [customUnitRate, setCustomUnitRate] = useState<number>(45);
+  const [systemTier, setSystemTier] = useState<SystemTier>('economy');
 
   const adjustedData = useMemo(() => {
     if (!solarData) return null;
     const rate = customUnitRate || 40;
-    // Recalculate savings based on unit rate
-    const monthlySavings = solarData.monthlyUnits * rate;
-    const paybackYears = Number((solarData.estimatedCost / (monthlySavings * 12)).toFixed(1));
+    
+    // Apply tier multipliers
+    // Economy is the baseline provided by AI
+    let cost = solarData.estimatedCost;
+    let units = solarData.monthlyUnits;
+    
+    if (systemTier === 'premium') {
+      cost = solarData.estimatedCost * 1.25; // 25% more expensive components
+      units = solarData.monthlyUnits * 1.10; // 10% more yield from bifacial/premium panels
+    }
+    
+    const monthlySavings = units * rate;
+    const paybackYears = Number((cost / (monthlySavings * 12)).toFixed(1));
+    
     return {
       ...solarData,
+      estimatedCost: cost,
+      monthlyUnits: units,
       monthlySavings,
       paybackYears,
-      unitRate: rate
+      unitRate: rate,
+      tier: systemTier
     };
-  }, [solarData, customUnitRate]);
+  }, [solarData, customUnitRate, systemTier]);
 
   const navItems = [
     { id: 'dashboard', label: language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard', icon: LayoutDashboard },
@@ -129,6 +144,7 @@ export default function App() {
                   data={adjustedData} 
                   language={language}
                   onRateChange={setCustomUnitRate}
+                  onTierChange={setSystemTier}
                 />
               </motion.div>
             ) : activeTab === 'financing' ? (

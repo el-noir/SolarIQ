@@ -1,3 +1,5 @@
+export type SystemTier = 'economy' | 'premium';
+
 export interface SolarData {
   systemSize: number;
   estimatedCost: number;
@@ -9,6 +11,7 @@ export interface SolarData {
   city: string;
   systemType: 'on-grid' | 'hybrid' | 'off-grid';
   unitRate?: number; // Optional custom unit rate
+  tier?: SystemTier;
 }
 
 export interface Installer {
