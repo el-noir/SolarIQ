@@ -1,5 +1,5 @@
 import { SolarData, Language } from '@/types';
-import { Download, CheckCircle2, AlertCircle, Sun, MapPin, Zap, TrendingUp, DollarSign, Loader2, LayoutDashboard } from 'lucide-react';
+import { Download, CheckCircle2, AlertCircle, Sun, MapPin, Zap, TrendingUp, DollarSign, Loader2, LayoutDashboard, MessageCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { useRef, useState } from 'react';
@@ -31,12 +31,16 @@ const translations = {
     disclaimer: "This diagnostic report uses live marketplace data and climate benchmarks for Pakistan. A technical site evaluation is Required for finalize mounting angles and DC cable route planning.",
     verifiedText: "Market\nGrounded\nVerified",
     solarSeasons: "solar seasons",
-    recommendationText: "Deployment of a high-efficiency"
+    recommendationText: "Deployment of a high-efficiency",
+    shareWhatsApp: "Share on WhatsApp",
+    shareMessage: "Assalam-o-Alaikum! Check out my Solar Proposal generated on SolarIQ.pk. System Size: {size}kW, Target Savings: {savings}/mo. Check your potential too!"
   },
   ur: {
     preview: "پروپوزل کا معائنہ",
     groundedReport: "مارکیٹ کی تصدیق شدہ رپورٹ",
     download: "پی ڈی ایف ڈاؤن لوڈ کریں",
+    shareWhatsApp: "واٹس ایپ شیئر",
+    shareMessage: "السلام علیکم! SolarIQ.pk سے میرا سولر پلان تیار ہو گیا ہے۔ سسٹم سائز: {size} کلو واٹ، بچت: {savings} ماہانہ۔ آپ بھی اپنا چیک کریں!",
     proposal: "سولر پروپوزل",
     marketAnalysis: "مارکیٹ کا درست تجزیہ",
     executiveTitle: "اہم سفارشات",
@@ -89,6 +93,15 @@ export default function ReportView({ data, language }: ReportViewProps) {
     }
   };
 
+  const shareOnWhatsApp = () => {
+    const message = t.shareMessage
+      .replace('{size}', data.systemSize.toString())
+      .replace('{savings}', formatPKR(data.monthlySavings));
+    
+    const encodedMessage = encodeURIComponent(message + "\n\n🔗 " + window.location.href);
+    window.open(`https://wa.me/?text=${encodedMessage}`, '_blank');
+  };
+
   const formatPKR = (num: number) => {
     return new Intl.NumberFormat('en-PK', {
       style: 'currency',
@@ -99,19 +112,28 @@ export default function ReportView({ data, language }: ReportViewProps) {
 
   return (
     <div className="p-8">
-      <div className="flex justify-between items-center mb-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
         <div>
           <h2 className="text-2xl font-extrabold text-earth font-serif">{t.preview}</h2>
           <p className="text-xs font-semibold text-sage uppercase tracking-widest mt-1">{t.groundedReport}</p>
         </div>
-        <button
-          onClick={handleDownload}
-          disabled={isExporting}
-          className="flex items-center gap-3 px-6 py-3 bg-earth text-white rounded-2xl hover:bg-sage disabled:opacity-30 font-bold transition-all shadow-xl shadow-earth/20 active:scale-95 text-sm"
-        >
-          {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-5 h-5" />}
-          {t.download}
-        </button>
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button
+            onClick={shareOnWhatsApp}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-3 bg-[#25D366] text-white rounded-2xl hover:bg-[#128C7E] font-bold transition-all shadow-xl shadow-green-500/20 active:scale-95 text-sm"
+          >
+            <MessageCircle className="w-5 h-5 fill-white" />
+            <span>{t.shareWhatsApp}</span>
+          </button>
+          <button
+            onClick={handleDownload}
+            disabled={isExporting}
+            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-3 bg-earth text-white rounded-2xl hover:bg-sage disabled:opacity-30 font-bold transition-all shadow-xl shadow-earth/20 active:scale-95 text-sm"
+          >
+            {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-5 h-5" />}
+            {t.download}
+          </button>
+        </div>
       </div>
 
       <div className={cn(

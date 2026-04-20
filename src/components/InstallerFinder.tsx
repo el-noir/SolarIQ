@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ShieldCheck, Phone, MapPin, Star, ExternalLink, Award, Info } from 'lucide-react';
+import { Search, ShieldCheck, Phone, MapPin, Star, ExternalLink, Award, Info, MessageCircle } from 'lucide-react';
 import { SolarData, Language, Installer } from '@/types';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -24,7 +24,9 @@ const translations = {
     contact: "Contact",
     viewProfile: "View Results",
     topRated: "Top Rated",
-    safetyWarning: "Always verify the original AEDB license before making any payments."
+    safetyWarning: "Always verify the original AEDB license before making any payments.",
+    waConsult: "Consult on WhatsApp",
+    waConsultMsg: "Assalam-o-Alaikum! I found your solar services on SolarIQ.pk. I am interested in a certified installation for my property in {city}. Please share your current rates."
   },
   ur: {
     title: "رجسٹرڈ سولر کمپنیاں (AEDB)",
@@ -38,7 +40,9 @@ const translations = {
     contact: "رابطہ کریں",
     viewProfile: "تفصیلات دیکھیں",
     topRated: "اعلیٰ درجہ بند",
-    safetyWarning: "کوئی بھی ادائیگی کرنے سے پہلے اصل لائسنس خود چیک کریں۔"
+    safetyWarning: "کوئی بھی ادائیگی کرنے سے پہلے اصل لائسنس خود چیک کریں۔",
+    waConsult: "واٹس ایپ مشاورت",
+    waConsultMsg: "السلام علیکم! میں نے آپ کی سولر سروسز SolarIQ.pk پر دیکھیں۔ میں {city} میں اپنے گھر کے لیے سولر انسٹالیشن کروانا چاہتا ہوں۔ براہ کرم تفصیلات شیئر کریں۔"
   }
 };
 
@@ -50,6 +54,13 @@ export default function InstallerFinder({ data, language, onSearch, isSearching 
     if (cityInput.trim()) {
       onSearch(cityInput);
     }
+  };
+
+  const consultExpertOnWA = () => {
+    const city = cityInput || "my city";
+    const message = encodeURIComponent(t.waConsultMsg.replace('{city}', city));
+    // Representative AEDB Support Channel placeholder (generic for demo, or real if any)
+    window.open(`https://wa.me/923000000000?text=${message}`, '_blank');
   };
 
   return (
@@ -104,6 +115,14 @@ export default function InstallerFinder({ data, language, onSearch, isSearching 
                {t.safetyWarning}
              </p>
           </div>
+
+          <button 
+            onClick={consultExpertOnWA}
+            className="w-full bg-[#25D366] text-white p-6 rounded-[32px] flex items-center justify-center gap-3 font-bold hover:bg-[#128C7E] transition-all shadow-xl shadow-green-500/10 text-sm"
+          >
+            <MessageCircle className="w-6 h-6 fill-white" />
+            {t.waConsult}
+          </button>
         </div>
 
         {/* Results Column (Visual Placeholder/Instructions) */}

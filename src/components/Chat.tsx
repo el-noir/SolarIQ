@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Loader2, User, Bot, Sun, FileText, Zap } from 'lucide-react';
+import { Send, Paperclip, Loader2, User, Bot, Sun, FileText, Zap, MessageCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
 import { Message, SolarData, Language } from '@/types';
@@ -130,6 +130,13 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
             <p className="text-[9px] sm:text-[10px] text-sage font-bold uppercase tracking-widest leading-none mt-0.5">Active Consultation</p>
           </div>
         </div>
+        <button 
+          onClick={() => window.open(`https://wa.me/923000000000?text=${encodeURIComponent("Assalam-o-Alaikum! I need help with my SolarIQ analysis.")}`, '_blank')}
+          className="p-2 sm:p-2.5 bg-[#25D366] text-white rounded-xl shadow-lg shadow-green-500/20 hover:bg-[#128C7E] transition-all"
+          title="Consult on WhatsApp"
+        >
+          <MessageCircle className="w-4 h-4 sm:w-5 h-5 fill-white" />
+        </button>
       </div>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
