@@ -90,10 +90,10 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
 
   if (!data) {
     return (
-      <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-bg-natural/50">
-        <Sun className="w-16 h-16 text-sage/20 mb-6 animate-pulse" />
-        <h3 className="text-2xl font-bold text-earth/40 font-serif italic">{t.analysisPending}</h3>
-        <p className="max-w-xs mt-3 text-sm text-sage/60 font-medium">
+      <div className="h-full flex flex-col items-center justify-center p-4 sm:p-8 text-center bg-bg-natural/50">
+        <Sun className="w-12 h-12 sm:w-16 h-16 text-sage/20 mb-6 animate-pulse" />
+        <h3 className="text-xl sm:text-2xl font-bold text-earth/40 font-serif italic">{t.analysisPending}</h3>
+        <p className="max-w-xs mt-3 text-xs sm:text-sm text-sage/60 font-medium">
           {t.uploadBill}
         </p>
       </div>
@@ -109,16 +109,16 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
   };
 
   return (
-    <div className="p-8 space-y-8 overflow-y-auto h-full bg-bg-natural/50">
-      <div className="flex items-center justify-between">
+    <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto h-full bg-bg-natural/50">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-extrabold text-earth font-serif">{t.overview}</h2>
-          <div className="flex items-center gap-2 text-sage text-sm mt-2 font-medium">
-            <MapPin className={cn("w-4 h-4 text-sun", language === 'ur' && "ml-2")} />
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-earth font-serif">{t.overview}</h2>
+          <div className="flex items-center gap-2 text-sage text-[10px] sm:text-sm mt-1 sm:mt-2 font-medium">
+            <MapPin className={cn("w-3 h-3 sm:w-4 h-4 text-sun", language === 'ur' && "ml-2")} />
             <span>{data.city}, {t.cityAnalysis}</span>
           </div>
         </div>
-        <div className="px-5 py-2 bg-ai-bubble text-earth rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-sm border border-sage/10">
+        <div className="w-fit px-4 py-1.5 bg-ai-bubble text-earth rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-sm border border-sage/10">
           {data.systemType === 'on-grid' ? t.onGrid : data.systemType === 'hybrid' ? t.hybrid : t.offGrid}
         </div>
       </div>
@@ -162,27 +162,27 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
         className="grid grid-cols-1 lg:grid-cols-2 gap-8"
       >
         {/* Tier Selector */}
-        <div className="bg-white p-8 rounded-[32px] border border-sage/10 shadow-sm space-y-6">
-           <div className="flex items-center gap-2 mb-4">
-              <Settings2 className="w-5 h-5 text-sun" />
-              <h3 className="font-bold text-lg font-serif text-earth">{t.systemConfig}</h3>
+        <div className="bg-white p-5 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-sage/10 shadow-sm space-y-4 sm:space-y-6">
+           <div className="flex items-center gap-2 mb-2 sm:mb-4">
+              <Settings2 className="w-4 h-4 sm:w-5 h-5 text-sun" />
+              <h3 className="font-bold text-base sm:text-lg font-serif text-earth">{t.systemConfig}</h3>
            </div>
            
-           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <button 
                 onClick={() => onTierChange('economy')}
                 className={cn(
-                  "p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
+                  "p-4 sm:p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
                   data.tier === 'economy' || !data.tier 
                     ? "border-sage bg-sage/5" 
                     : "border-transparent bg-bg-natural hover:bg-sage/5"
                 )}
               >
                 <div className="flex items-center justify-between mb-2 w-full">
-                  <ShieldCheck className={cn("w-5 h-5", data.tier === 'economy' || !data.tier ? "text-sage" : "text-sage/30")} />
-                  <span className="font-black text-earth text-xs uppercase tracking-widest">{t.economy}</span>
+                  <ShieldCheck className={cn("w-4 h-4 sm:w-5 h-5", data.tier === 'economy' || !data.tier ? "text-sage" : "text-sage/30")} />
+                  <span className="font-black text-earth text-[10px] sm:text-xs uppercase tracking-widest">{t.economy}</span>
                 </div>
-                <p className="text-[10px] text-sage font-medium leading-relaxed opacity-60">
+                <p className="text-[9px] sm:text-[10px] text-left sm:text-right text-sage font-medium leading-relaxed opacity-60">
                   {t.economyDesc}
                 </p>
               </button>
@@ -190,17 +190,17 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
               <button 
                 onClick={() => onTierChange('premium')}
                 className={cn(
-                  "p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
+                  "p-4 sm:p-5 rounded-2xl border-2 text-right flex flex-col transition-all",
                   data.tier === 'premium' 
                     ? "border-earth bg-earth text-white" 
                     : "border-transparent bg-bg-natural hover:bg-earth/5"
                 )}
               >
                 <div className="flex items-center justify-between mb-2 w-full">
-                  <Gem className={cn("w-5 h-5", data.tier === 'premium' ? "text-sun" : "text-earth/30")} />
-                  <span className={cn("font-black text-xs uppercase tracking-widest", data.tier === 'premium' ? "text-white" : "text-earth")}>{t.premium}</span>
+                  <Gem className={cn("w-4 h-4 sm:w-5 h-5", data.tier === 'premium' ? "text-sun" : "text-earth/30")} />
+                  <span className={cn("font-black text-[10px] sm:text-xs uppercase tracking-widest", data.tier === 'premium' ? "text-white" : "text-earth")}>{t.premium}</span>
                 </div>
-                <p className={cn("text-[10px] font-medium leading-relaxed", data.tier === 'premium' ? "text-white/70" : "text-earth/60")}>
+                <p className={cn("text-[9px] sm:text-[10px] text-left sm:text-right font-medium leading-relaxed", data.tier === 'premium' ? "text-white/70" : "text-earth/60")}>
                   {t.premiumDesc}
                 </p>
               </button>
@@ -208,17 +208,17 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
         </div>
 
         {/* Rate Slider */}
-        <div className="bg-ai-bubble/30 p-8 rounded-[32px] border border-sage/10 flex flex-col justify-center">
+        <div className="bg-ai-bubble/30 p-5 sm:p-8 rounded-[24px] sm:rounded-[32px] border border-sage/10 flex flex-col justify-center">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 mb-4">
-               <SlidersHorizontal className="w-5 h-5 text-sun" />
-               <h3 className="font-bold text-lg font-serif text-earth">{t.roiSensitivity}</h3>
+            <div className="flex items-center gap-2 mb-2 sm:mb-4">
+               <SlidersHorizontal className="w-4 h-4 sm:w-5 h-5 text-sun" />
+               <h3 className="font-bold text-base sm:text-lg font-serif text-earth">{t.roiSensitivity}</h3>
             </div>
-            <p className="text-xs text-sage font-medium opacity-80 mb-4">{t.impactText}</p>
+            <p className="text-[10px] sm:text-xs text-sage font-medium opacity-80 mb-2 sm:mb-4">{t.impactText}</p>
             
             <div className="flex justify-between items-end mb-1">
-               <span className="text-xs font-bold text-earth">{t.adjustRate}</span>
-               <span className="text-lg font-black text-earth">PKR {data.unitRate}<span className="text-xs font-normal opacity-60 ml-1">/ unit</span></span>
+               <span className="text-[10px] sm:text-xs font-bold text-earth">{t.adjustRate}</span>
+               <span className="text-base sm:text-lg font-black text-earth">PKR {data.unitRate}<span className="text-[10px] sm:text-xs font-normal opacity-60 ml-1">/ unit</span></span>
             </div>
             <input 
               type="range" 
@@ -315,15 +315,15 @@ function MetricCard({ icon, label, value, subValue, delay }: any) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay }}
-      className="card-natural p-7 group hover:bg-ai-bubble/20 transition-all duration-500 cursor-default"
+      className="card-natural p-5 sm:p-7 group hover:bg-ai-bubble/20 transition-all duration-500 cursor-default"
     >
-      <div className="w-12 h-12 rounded-2xl bg-bg-natural flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-500">
+      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-bg-natural flex items-center justify-center mb-4 sm:mb-5 group-hover:scale-110 transition-transform duration-500">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-clay/60 mb-1">{label}</p>
-        <p className="text-2xl font-bold text-earth my-1 font-serif">{value}</p>
-        <p className="text-xs text-sage font-medium opacity-70">{subValue}</p>
+        <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-clay/60 mb-1">{label}</p>
+        <p className="text-xl sm:text-2xl font-bold text-earth my-0.5 sm:my-1 font-serif">{value}</p>
+        <p className="text-[10px] sm:text-xs text-sage font-medium opacity-70">{subValue}</p>
       </div>
     </motion.div>
   );

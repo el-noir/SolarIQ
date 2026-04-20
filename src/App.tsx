@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [solarData, setSolarData] = useState<SolarData | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'report' | 'financing' | 'installers'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'report' | 'financing' | 'installers' | 'chat'>('dashboard');
   const [installerSearch, setInstallerSearch] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
@@ -48,8 +48,9 @@ export default function App() {
 
   const navItems = [
     { id: 'dashboard', label: language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard', icon: LayoutDashboard },
-    { id: 'financing', label: language === 'ur' ? 'فنانسنگ' : 'Installments', icon: Landmark },
-    { id: 'installers', label: language === 'ur' ? 'انسٹالرز' : 'Installers', icon: ShieldCheck },
+    { id: 'chat', label: language === 'ur' ? 'ایڈوائزر' : 'Advisor', icon: Sun, mobileOnly: true },
+    { id: 'financing', label: language === 'ur' ? 'فنانسنگ' : 'Invest', icon: Landmark },
+    { id: 'installers', label: language === 'ur' ? 'انسٹالرز' : 'Pros', icon: ShieldCheck },
     { id: 'report', label: language === 'ur' ? 'پروپوزل' : 'Proposal', icon: FileText, disabled: !solarData },
   ];
 
@@ -58,11 +59,10 @@ export default function App() {
       "flex flex-col lg:flex-row h-screen bg-bg-natural overflow-hidden",
       language === 'ur' ? "font-urdu text-right" : "font-sans"
     )} dir={language === 'ur' ? 'rtl' : 'ltr'}>
-      {/* Sidebar - Chat (Always visible on large screens) */}
+      {/* Sidebar - Chat (Visible only on large screens) */}
       <aside className={cn(
-        "w-full lg:w-[400px] xl:w-[450px] flex-shrink-0 z-40 transition-transform duration-300",
-        isMobileMenuOpen ? "translate-x-0" : (language === 'ur' ? "translate-x-full" : "-translate-x-full") + " lg:translate-x-0",
-        "fixed lg:relative inset-0 lg:inset-auto h-full shadow-2xl lg:shadow-none"
+        "hidden lg:flex w-[400px] xl:w-[450px] flex-shrink-0 z-40 border-r border-black/5",
+        "h-full"
       )}>
         <Chat 
           onDataUpdate={setSolarData} 
@@ -74,28 +74,22 @@ export default function App() {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 flex flex-col min-w-0 relative h-full">
+      <main className="flex-1 flex flex-col min-w-0 relative h-full safe-bottom">
         {/* Navigation Header */}
-        <header className="h-[72px] bg-white/80 backdrop-blur-md border-b border-black/5 flex items-center justify-between px-8 shrink-0">
+        <header className="h-[64px] sm:h-[72px] bg-white/80 backdrop-blur-md border-b border-black/5 flex items-center justify-between px-4 sm:px-8 shrink-0 z-50">
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 hover:bg-sage/10 rounded-lg text-sage"
-            >
-              {isMobileMenuOpen ? <X /> : <Menu />}
-            </button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-sage flex items-center justify-center lg:hidden shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-sage flex items-center justify-center shadow-lg shadow-sage/20">
                 <Sun className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-earth tracking-tight hidden sm:block font-serif">
+              <h1 className="text-xl sm:text-2xl font-bold text-earth tracking-tight font-serif">
                 SolarIQ<span className="text-sun">.pk</span>
               </h1>
             </div>
           </div>
 
-          <nav className="flex items-center bg-[#E9EDC9]/30 p-1 rounded-2xl overflow-x-auto no-scrollbar max-w-[300px] sm:max-w-none">
-            {navItems.map((item) => (
+          <nav className="hidden lg:flex items-center bg-[#E9EDC9]/30 p-1 rounded-2xl">
+            {navItems.filter(item => !item.mobileOnly).map((item) => (
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
@@ -106,7 +100,7 @@ export default function App() {
                 )}
               >
                 <item.icon className="w-4 h-4" />
-                <span className="hidden sm:inline">{item.label}</span>
+                <span>{item.label}</span>
               </button>
             ))}
           </nav>
@@ -130,9 +124,25 @@ export default function App() {
         </header>
 
         {/* Tab Content */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden pb-[80px] lg:pb-0">
           <AnimatePresence mode="wait">
-            {activeTab === 'dashboard' ? (
+            {activeTab === 'chat' ? (
+              <motion.div
+                key="chat-mobile"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                className="h-full lg:hidden"
+              >
+                <Chat 
+                  onDataUpdate={(data) => { setSolarData(data); setActiveTab('dashboard'); }} 
+                  language={language}
+                  unitRate={customUnitRate}
+                  externalInput={installerSearch}
+                  onExternalInputHandled={() => setInstallerSearch(null)}
+                />
+              </motion.div>
+            ) : activeTab === 'dashboard' ? (
               <motion.div
                 key="dashboard"
                 initial={{ opacity: 0, scale: 0.98 }}
@@ -196,6 +206,33 @@ export default function App() {
             )}
           </AnimatePresence>
         </div>
+
+        {/* Mobile Bottom Navigation */}
+        <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-white/90 backdrop-blur-xl border-t border-black/5 lg:hidden flex items-center justify-around px-2 z-50 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id as any)}
+              disabled={item.disabled}
+              className={cn(
+                "flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300",
+                activeTab === item.id 
+                  ? "text-earth scale-110" 
+                  : "text-sage/60 hover:text-earth disabled:opacity-20"
+              )}
+            >
+              <div className={cn(
+                "p-2 rounded-xl transition-all",
+                activeTab === item.id ? "bg-earth text-white shadow-lg shadow-earth/20" : "bg-transparent"
+              )}>
+                <item.icon className="w-5 h-5" />
+              </div>
+              <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </nav>
 
         {/* Background Decorative Element */}
         <div className="absolute inset-0 -z-10 pointer-events-none overflow-hidden opacity-30">

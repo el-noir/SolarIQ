@@ -119,39 +119,39 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
   }
 
   return (
-    <div className="flex flex-col h-full bg-white/40 backdrop-blur-md border-r border-black/5">
-      <div className="p-6 border-b border-black/5 bg-white/60 flex items-center justify-between">
+    <div className="flex flex-col h-full bg-white/40 backdrop-blur-md lg:border-r border-black/5">
+      <div className="p-4 sm:p-6 border-b border-black/5 bg-white/60 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-sage flex items-center justify-center shadow-lg shadow-sage/20">
-            <Sun className="w-6 h-6 text-white" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-sage flex items-center justify-center shadow-lg shadow-sage/20">
+            <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
           </div>
           <div>
-            <h2 className="font-bold text-earth text-lg font-serif">SolarIQ Advisor</h2>
-            <p className="text-[10px] text-sage font-bold uppercase tracking-widest">Active Consultation</p>
+            <h2 className="font-bold text-earth text-sm sm:text-lg font-serif">SolarIQ Advisor</h2>
+            <p className="text-[9px] sm:text-[10px] text-sage font-bold uppercase tracking-widest leading-none mt-0.5">Active Consultation</p>
           </div>
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
         {messages.map((m, i) => (
           <div key={i} className={cn(
-            "flex gap-3",
+            "flex gap-2 sm:gap-3",
             m.role === 'user' ? "flex-row-reverse" : "flex-row"
           )}>
             <div className={cn(
-              "w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-1 shadow-sm",
-              m.role === 'user' ? "bg-clay text-white" : "bg-ai-bubble text-earth"
+              "w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 mt-1 shadow-sm",
+              m.role === 'user' ? "bg-clay text-white" : "bg-white text-earth border border-black/5"
             )}>
-              {m.role === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+              {m.role === 'user' ? <User className="w-3.5 h-3.5 sm:w-4 h-4" /> : <Bot className="w-3.5 h-3.5 sm:w-4 h-4" />}
             </div>
             <div className={cn(
-              "max-w-[85%] rounded-[24px] p-4 shadow-sm leading-relaxed",
+              "max-w-[85%] rounded-[20px] sm:rounded-[24px] p-3 sm:p-4 shadow-sm leading-relaxed",
               m.role === 'user' 
                 ? "bg-sage text-white rounded-tr-none" 
-                : "bg-ai-bubble text-earth rounded-tl-none border border-sage/10"
+                : "bg-white text-earth rounded-tl-none border border-sage/10 text-sm"
             )}>
               <div className={cn(
-                "prose prose-sm max-w-none",
+                "prose prose-sm max-w-none break-words",
                 m.role === 'user' ? "prose-invert prose-white" : "prose-slate"
               )}>
                 <ReactMarkdown>
@@ -162,24 +162,24 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
           </div>
         ))}
         {isLoading && (
-          <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-xl bg-ai-bubble text-earth flex items-center justify-center shrink-0 shadow-sm border border-sage/10">
-              <Bot className="w-4 h-4" />
+          <div className="flex gap-2 sm:gap-3">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white border border-black/5 text-earth flex items-center justify-center shrink-0 shadow-sm">
+              <Bot className="w-3.5 h-3.5 sm:w-4 h-4" />
             </div>
-            <div className="bg-ai-bubble/50 border border-sage/10 rounded-[24px] rounded-tl-none p-4 shadow-sm">
-              <Loader2 className="w-5 h-5 animate-spin text-sage" />
+            <div className="bg-white/80 border border-sage/10 rounded-[20px] rounded-tl-none p-3 sm:p-4 shadow-sm">
+              <Loader2 className="w-4 h-4 sm:w-5 h-5 animate-spin text-sage" />
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-6 border-t border-black/5 bg-white/60">
-        <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide no-scrollbar">
+      <div className="p-4 sm:p-6 border-t border-black/5 bg-white sm:bg-white/60 shrink-0">
+        <div className="flex gap-2 overflow-x-auto pb-3 sm:pb-4 scrollbar-hide no-scrollbar">
           {quickActions.map((action, i) => (
             <button
               key={i}
               onClick={() => { setInput(action.prompt); }}
-              className="whitespace-nowrap px-4 py-2 bg-ai-bubble/50 border border-sage/10 text-earth rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-sage hover:text-white transition-all shadow-sm"
+              className="whitespace-nowrap px-3 sm:px-4 py-1.5 sm:py-2 bg-ai-bubble/50 border border-sage/10 text-earth rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider hover:bg-sage hover:text-white transition-all shadow-sm"
             >
               {action.label}
             </button>
@@ -188,21 +188,21 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
         {attachedFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {attachedFiles.map((f, i) => (
-              <div key={i} className="flex items-center gap-1 bg-[#FAFAF5] px-3 py-1.5 rounded-xl text-xs text-earth font-medium border border-sage/20">
-                <FileText className="w-3 h-3 text-sage" />
-                <span className="truncate max-w-[120px]">{f.name}</span>
+              <div key={i} className="flex items-center gap-1 bg-[#FAFAF5] px-2 py-1 rounded-lg text-[10px] text-earth font-medium border border-sage/20">
+                <FileText className="w-2.5 h-2.5 text-sage" />
+                <span className="truncate max-w-[80px] sm:max-w-[120px]">{f.name}</span>
                 <button onClick={() => setAttachedFiles(prev => prev.filter((_, idx) => idx !== i))} className="hover:text-red-500 ml-1 font-bold">×</button>
               </div>
             ))}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="flex items-center gap-3">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2 sm:gap-3">
           <button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="p-2.5 text-sage hover:bg-sage/10 rounded-xl transition-all"
+            className="p-2 sm:p-2.5 text-sage hover:bg-sage/10 rounded-xl transition-all"
           >
-            <Paperclip className="w-5 h-5" />
+            <Paperclip className="w-4.5 h-4.5 sm:w-5 h-5" />
           </button>
           <input
             type="file"
@@ -216,14 +216,14 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Analysis request or bill upload..."
-            className="flex-1 bg-white border border-sage/20 rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-sage focus:border-transparent outline-none shadow-inner"
+            placeholder={language === 'ur' ? 'سوال پوچھیئے...' : "Analysis request..."}
+            className="flex-1 bg-white border border-sage/20 rounded-xl sm:rounded-2xl px-3 sm:px-5 py-2 sm:py-3 text-xs sm:text-sm focus:ring-2 focus:ring-sage focus:border-transparent outline-none shadow-inner"
           />
           <button
             disabled={isLoading || (!input.trim() && attachedFiles.length === 0)}
-            className="p-3 bg-earth text-white rounded-2xl hover:bg-sage disabled:opacity-30 transition-all shadow-lg active:scale-95"
+            className="p-2.5 sm:p-3 bg-earth text-white rounded-xl sm:rounded-2xl hover:bg-sage disabled:opacity-30 transition-all shadow-lg active:scale-95 flex items-center justify-center shrink-0"
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4 sm:w-5 h-5" />
           </button>
         </form>
       </div>
