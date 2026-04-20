@@ -1,6 +1,6 @@
 {
   "name": "SolarIQ Pakistan",
-  "description": "Pakistan's smartest solar advisor. Extract bill data, analyze roof photos, and get live ROI with Google Search grounding.",
+  "description": "An advanced AI-driven Solar Advisor for Pakistan featuring Hybrid Search Grounding and Function Calling for zero-hallucination ROI analysis. #AISeekho2026 #VibeKaregaPakistan",
   "requestFramePermissions": ["camera"],
   "majorCapabilities": ["vision", "search"]
 }

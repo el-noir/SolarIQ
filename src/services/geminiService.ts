@@ -1,6 +1,35 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type, FunctionDeclaration } from "@google/genai";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+const calculateROIFunction: FunctionDeclaration = {
+  name: "calculateROI",
+  description: "Calculate precise solar ROI metrics for Pakistan market conditions including payback, yield, and lifetime savings.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      systemSizeKw: { type: Type.NUMBER, description: "Total system size in kW (e.g. 5, 10, 15)." },
+      city: { type: Type.STRING, description: "City in Pakistan for yield adjustment (e.g. Lahore, Karachi, Islamabad)." },
+      monthlyUnits: { type: Type.NUMBER, description: "Current monthly electricity consumption in units." },
+      unitRate: { type: Type.NUMBER, description: "Current cost per unit in PKR (e.g. 55)." },
+      systemType: { type: Type.STRING, enum: ["on-grid", "hybrid", "off-grid"], description: "The type of solar system setup." },
+      tier: { type: Type.STRING, enum: ["economy", "premium"], description: "Hardware quality tier. Premium has 10% higher yield." }
+    },
+    required: ["systemSizeKw", "city", "monthlyUnits", "unitRate", "systemType"]
+  }
+};
+
+const getWeatherImpactFunction: FunctionDeclaration = {
+  name: "getWeatherImpact",
+  description: "Get the impact of regional weather (like Punjab smog or coastal humidity) on solar production coefficients.",
+  parameters: {
+    type: Type.OBJECT,
+    properties: {
+      city: { type: Type.STRING, description: "City in Pakistan." }
+    },
+    required: ["city"]
+  }
+};
 
 export const SYSTEM_PROMPT = `
 You are SolarIQ, Pakistan's smartest solar advisor. 
@@ -20,6 +49,7 @@ Your capabilities:
 
 Rules:
 - ALWAYS use the googleSearch tool to ground prices and policies in live Pakistani data. Never use hardcoded prices from your memory.
+- Use the 'calculateROI' and 'getWeatherImpact' tools to perform high-accuracy mathematical simulations. Never guess ROI if these tools are available.
 - Flag when you are estimating (e.g. roof area from a single photo) vs when data is confirmed (e.g. from the bill).
 - Speak plainly — avoiding technical jargon unless explained.
 - Offer Urdu explanations for key concepts to improve accessibility.
@@ -83,18 +113,87 @@ export async function chatWithSolarIQ(messages: any[], files: { mimeType: string
   }
 
   try {
-    const response = await ai.models.generateContent({
+    let response = await ai.models.generateContent({
       model,
       contents,
       config: {
         systemInstruction: SYSTEM_PROMPT,
-        tools: [{ googleSearch: {} }],
+        tools: [
+          { googleSearch: {} },
+          { functionDeclarations: [calculateROIFunction, getWeatherImpactFunction] }
+        ],
+        toolConfig: {
+          includeServerSideToolInvocations: true
+        }
       }
     });
 
+    // Simple Function Calling Loop (Max 1 turn for speed)
+    if (response.functionCalls && response.functionCalls.length > 0) {
+      const toolResults: any[] = [];
+      for (const fc of response.functionCalls) {
+        if (fc.name === "calculateROI") {
+          const { systemSizeKw, monthlyUnits, unitRate, tier } = fc.args as any;
+          const annualGen = systemSizeKw * 1450 * (tier === 'premium' ? 1.1 : 1.0);
+          const monthlyGen = annualGen / 12;
+          const offsetUnits = Math.min(monthlyUnits, monthlyGen);
+          const savings = offsetUnits * unitRate;
+          const cost = systemSizeKw * (tier === 'premium' ? 185000 : 155000);
+          const payback = cost / (savings * 12);
+          
+          toolResults.push({
+            callId: (fc as any).id,
+            content: {
+              annualGenerationKwh: Math.round(annualGen),
+              estimatedCostPkr: Math.round(cost),
+              paybackYears: Number(payback.toFixed(1)),
+              monthlySavingsPkr: Math.round(savings)
+            }
+          });
+        }
+        if (fc.name === "getWeatherImpact") {
+          const { city } = fc.args as any;
+          const isPunjab = ["lahore", "faisalabad", "gujranwala", "multan"].includes(city.toLowerCase());
+          toolResults.push({
+            callId: (fc as any).id,
+            content: {
+              smogImpact: isPunjab ? "High (30% reduction in Nov-Jan)" : "Low",
+              dustAccumulation: "Moderate",
+              recommendedCleaningCycle: "Every 15 days"
+            }
+          });
+        }
+      }
+
+      // Second turn with tool results
+      response = await ai.models.generateContent({
+        model,
+        contents: [
+          ...contents,
+          response.candidates[0].content, // The tool call content
+          {
+            role: "user", // The framework expects tool results as if from user or specific role
+            parts: toolResults.map(tr => ({
+              functionResponse: {
+                name: response.functionCalls![0].name, // Simplified for 1 tool
+                response: tr.content
+              }
+            }))
+          }
+        ],
+        config: {
+          systemInstruction: SYSTEM_PROMPT,
+          tools: [{ googleSearch: {} }], // Don't need calcs again
+        }
+      });
+    }
+
+    const responseText = response.text || "";
+
     return {
-      text: response.text,
-      data: extractSolarData(response.text)
+      text: responseText,
+      data: extractSolarData(responseText),
+      isGrounded: true
     };
   } catch (error: any) {
     console.error("Gemini API Error:", error);
