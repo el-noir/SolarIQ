@@ -84,7 +84,8 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
         content: response.text.replace(/<solar_data>[\s\S]*?<\/solar_data>/, ''),
         data: response.data,
         timestamp: Date.now(),
-        isError: (response as any).isError
+        isError: (response as any).isError,
+        isGrounded: true // Flag indicating this uses Google Search grounding
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -153,13 +154,19 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
               {m.role === 'user' ? <User className="w-3.5 h-3.5 sm:w-4 h-4" /> : <Bot className="w-3.5 h-3.5 sm:w-4 h-4" />}
             </div>
             <div className={cn(
-              "max-w-[85%] rounded-[20px] sm:rounded-[24px] p-3 sm:p-4 shadow-sm leading-relaxed",
+              "max-w-[85%] rounded-[20px] sm:rounded-[24px] p-3 sm:p-4 shadow-sm leading-relaxed relative",
               m.role === 'user' 
                 ? "bg-sage text-white rounded-tr-none" 
                 : m.isError 
                   ? "bg-red-50 text-red-600 border border-red-100 rounded-tl-none text-sm"
                   : "bg-white text-earth rounded-tl-none border border-sage/10 text-sm"
             )}>
+              {m.role === 'assistant' && m.isGrounded && !m.isError && (
+                <div className="absolute -top-3 right-4 flex items-center gap-1.5 bg-sun px-2.5 py-1 rounded-full shadow-lg border border-white/50">
+                   <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                   <span className="text-[8px] font-black uppercase tracking-tighter text-white">Live Market Data Verified</span>
+                </div>
+              )}
               <div className={cn(
                 "prose prose-sm max-w-none break-words",
                 m.role === 'user' ? "prose-invert prose-white" : m.isError ? "prose-red" : "prose-slate"

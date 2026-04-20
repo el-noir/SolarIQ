@@ -39,4 +39,5 @@ export interface Message {
   data?: SolarData;
   timestamp: number;
   isError?: boolean;
+  isGrounded?: boolean;
 }

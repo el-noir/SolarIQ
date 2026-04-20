@@ -1,5 +1,5 @@
-import { useMemo } from 'react';
-import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock, Settings2, ShieldCheck, Gem, Info, ArrowUpRight, BarChart3 } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock, Settings2, ShieldCheck, Gem, Info, ArrowUpRight, BarChart3, Search } from 'lucide-react';
 import { SolarData, Language, SystemTier } from '@/types';
 import { motion, AnimatePresence } from 'motion/react';
 import SolarScheduler from './SolarScheduler';
@@ -184,8 +184,91 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
     });
   }, [data.monthlySavings]);
 
+  const [showVibeModal, setShowVibeModal] = useState(false);
+
   return (
-    <div className="p-6 sm:p-12 space-y-12 overflow-y-auto h-full bg-bg-natural/50 max-w-7xl mx-auto no-scrollbar">
+    <div className="p-6 sm:p-12 space-y-12 overflow-y-auto h-full bg-bg-natural/50 max-w-7xl mx-auto no-scrollbar relative">
+      
+      {/* Hackathon Vibe Floating Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setShowVibeModal(true)}
+        className="fixed bottom-24 right-6 sm:bottom-12 sm:right-12 z-50 px-6 py-3 bg-earth text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl flex items-center gap-3 border border-sun/30"
+      >
+        <div className="w-2 h-2 rounded-full bg-sun animate-pulse" />
+        #VibeKaregaPakistan
+      </motion.button>
+
+      <AnimatePresence>
+        {showVibeModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-earth/40 backdrop-blur-md">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="bg-white w-full max-w-2xl rounded-[40px] shadow-2xl overflow-hidden border border-sun/20 flex flex-col max-h-[80vh]"
+            >
+              <div className="p-8 border-b border-sage/10 bg-bg-natural/50 flex items-center justify-between">
+                <div>
+                  <h3 className="text-2xl font-black font-serif text-earth">The Mind of SolarIQ</h3>
+                  <p className="text-[10px] font-black text-sage uppercase tracking-widest mt-1">#AISeekho2026 Technical Specs</p>
+                </div>
+                <button onClick={() => setShowVibeModal(false)} className="w-10 h-10 rounded-full bg-sage/10 flex items-center justify-center text-earth font-bold hover:bg-sage/20 transition-all">×</button>
+              </div>
+              <div className="p-8 overflow-y-auto space-y-8 no-scrollbar">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                   <div className="p-6 rounded-3xl bg-bg-natural border border-sage/5">
+                      <div className="flex items-center gap-3 mb-4">
+                         <div className="w-10 h-10 rounded-2xl bg-sun/10 flex items-center justify-center">
+                            <Zap className="w-5 h-5 text-sun fill-sun/20" />
+                         </div>
+                         <h4 className="font-bold text-earth">Gemini 3 Flash</h4>
+                      </div>
+                      <p className="text-xs text-sage font-medium leading-relaxed">Multimodal execution using <b>Gemini 3 Flash</b> for high-speed analysis of electricity bills and roof geometry.</p>
+                   </div>
+                   <div className="p-6 rounded-3xl bg-bg-natural border border-sage/5">
+                      <div className="flex items-center gap-3 mb-4">
+                         <div className="w-10 h-10 rounded-2xl bg-earth flex items-center justify-center">
+                            <Search className="w-5 h-5 text-sun" />
+                         </div>
+                         <h4 className="font-bold text-earth">Search Grounding</h4>
+                      </div>
+                      <p className="text-xs text-sage font-medium leading-relaxed">Integrated <b>Google Search grounding</b> to fetch live PKR rates for Tier-1 hardware (Longi/Jinko) and current NEPRA policies.</p>
+                   </div>
+                </div>
+
+                <div className="space-y-4">
+                   <h4 className="text-micro text-clay uppercase tracking-widest font-black">Vibe Engineering Features</h4>
+                   <div className="space-y-3">
+                      {[
+                        { title: "Smog Yield Engine", desc: "Accounts for 30% production drop in Punjab during winter (Nov-Jan)." },
+                        { title: "Bilingual Prompt Logic", desc: "Optimized prompt engineering for technical Urdu terms using Noto Nastaliq." },
+                        { title: "ROI Sensitivity", desc: "Live recalculation of payback periods based on utility rate spikes up to PKR 85/unit." }
+                      ].map((feat, i) => (
+                        <div key={i} className="flex gap-4 p-4 bg-bg-natural/50 rounded-2xl border border-black/5">
+                           <ShieldCheck className="w-5 h-5 text-sage shrink-0" />
+                           <div>
+                              <p className="text-xs font-bold text-earth mb-1">{feat.title}</p>
+                              <p className="text-[10px] text-sage font-medium font-bold opacity-60 uppercase">{feat.desc}</p>
+                           </div>
+                        </div>
+                      ))}
+                   </div>
+                </div>
+              </div>
+              <div className="p-6 bg-earth text-white flex items-center justify-between">
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-60">Status: App Banaao Track Entry</p>
+                 <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-sun animate-ping" />
+                    <span className="text-[10px] font-bold">Cloud Run Deployed</span>
+                 </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-sage/10 pb-12">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
