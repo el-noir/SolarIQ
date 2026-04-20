@@ -83,7 +83,8 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
         role: 'assistant',
         content: response.text.replace(/<solar_data>[\s\S]*?<\/solar_data>/, ''),
         data: response.data,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        isError: (response as any).isError
       };
 
       setMessages(prev => [...prev, assistantMessage]);
@@ -155,11 +156,13 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
               "max-w-[85%] rounded-[20px] sm:rounded-[24px] p-3 sm:p-4 shadow-sm leading-relaxed",
               m.role === 'user' 
                 ? "bg-sage text-white rounded-tr-none" 
-                : "bg-white text-earth rounded-tl-none border border-sage/10 text-sm"
+                : m.isError 
+                  ? "bg-red-50 text-red-600 border border-red-100 rounded-tl-none text-sm"
+                  : "bg-white text-earth rounded-tl-none border border-sage/10 text-sm"
             )}>
               <div className={cn(
                 "prose prose-sm max-w-none break-words",
-                m.role === 'user' ? "prose-invert prose-white" : "prose-slate"
+                m.role === 'user' ? "prose-invert prose-white" : m.isError ? "prose-red" : "prose-slate"
               )}>
                 <ReactMarkdown>
                   {m.content}

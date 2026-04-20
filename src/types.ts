@@ -38,4 +38,5 @@ export interface Message {
   content: string;
   data?: SolarData;
   timestamp: number;
+  isError?: boolean;
 }

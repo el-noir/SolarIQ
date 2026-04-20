@@ -82,19 +82,37 @@ export async function chatWithSolarIQ(messages: any[], files: { mimeType: string
     lastMessage.parts = newParts;
   }
 
-  const response = await ai.models.generateContent({
-    model,
-    contents,
-    config: {
-      systemInstruction: SYSTEM_PROMPT,
-      tools: [{ googleSearch: {} }],
-    }
-  });
+  try {
+    const response = await ai.models.generateContent({
+      model,
+      contents,
+      config: {
+        systemInstruction: SYSTEM_PROMPT,
+        tools: [{ googleSearch: {} }],
+      }
+    });
 
-  return {
-    text: response.text,
-    data: extractSolarData(response.text)
-  };
+    return {
+      text: response.text,
+      data: extractSolarData(response.text)
+    };
+  } catch (error: any) {
+    console.error("Gemini API Error:", error);
+    
+    // Check for "API not enabled" or "Project not used before" errors
+    const errorMessage = error?.message || "";
+    if (errorMessage.includes("generativelanguage.googleapis.com") || errorMessage.includes("disabled") || errorMessage.includes("403")) {
+      return {
+        text: language === 'ur' 
+          ? "معذرت، ایسا لگتا ہے کہ Gemini API آپ کے پروجیکٹ میں فعال نہیں ہے۔ براہ کرم گوگل کلاؤڈ کنسول میں جائیں اور 'Generative Language API' کو فعال کریں۔"
+          : "It appears the Gemini API is not enabled for this project. Please visit the Google Cloud Console and enable the 'Generative Language API' to use the AI Advisor.",
+        data: null,
+        isError: true
+      };
+    }
+    
+    throw error;
+  }
 }
 
 function extractSolarData(text: string) {
