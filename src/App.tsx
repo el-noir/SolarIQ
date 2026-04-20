@@ -3,13 +3,14 @@ import { SolarData, Language } from './types';
 import Chat from './components/Chat';
 import Dashboard from './components/Dashboard';
 import ReportView from './components/ReportView';
-import { Sun, LayoutDashboard, FileText, Menu, X, Globe } from 'lucide-react';
+import FinancingCalculator from './components/FinancingCalculator';
+import { Sun, LayoutDashboard, FileText, Menu, X, Globe, Landmark } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [solarData, setSolarData] = useState<SolarData | null>(null);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'report'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'report' | 'financing'>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [language, setLanguage] = useState<Language>('en');
   const [customUnitRate, setCustomUnitRate] = useState<number>(45);
@@ -27,6 +28,12 @@ export default function App() {
       unitRate: rate
     };
   }, [solarData, customUnitRate]);
+
+  const navItems = [
+    { id: 'dashboard', label: language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard', icon: LayoutDashboard },
+    { id: 'financing', label: language === 'ur' ? 'فنانسنگ' : 'Installments', icon: Landmark },
+    { id: 'report', label: language === 'ur' ? 'پروپوزل' : 'Proposal', icon: FileText, disabled: !solarData },
+  ];
 
   return (
     <div className={cn(
@@ -67,28 +74,21 @@ export default function App() {
             </div>
           </div>
 
-          <nav className="flex items-center bg-[#E9EDC9]/30 p-1 rounded-2xl">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={cn(
-                "flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold transition-all",
-                activeTab === 'dashboard' ? "bg-white text-earth shadow-sm" : "text-sage hover:text-earth"
-              )}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>{language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard'}</span>
-            </button>
-            <button
-              onClick={() => setActiveTab('report')}
-              disabled={!solarData}
-              className={cn(
-                "flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold transition-all",
-                activeTab === 'report' ? "bg-white text-earth shadow-sm" : "text-sage hover:text-earth disabled:opacity-30"
-              )}
-            >
-              <FileText className="w-4 h-4" />
-              <span>{language === 'ur' ? 'پروپوزل' : 'Proposal'}</span>
-            </button>
+          <nav className="flex items-center bg-[#E9EDC9]/30 p-1 rounded-2xl overflow-x-auto no-scrollbar max-w-[300px] sm:max-w-none">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveTab(item.id as any)}
+                disabled={item.disabled}
+                className={cn(
+                  "flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-semibold transition-all whitespace-nowrap",
+                  activeTab === item.id ? "bg-white text-earth shadow-sm" : "text-sage hover:text-earth disabled:opacity-30"
+                )}
+              >
+                <item.icon className="w-4 h-4" />
+                <span className="hidden sm:inline">{item.label}</span>
+              </button>
+            ))}
           </nav>
 
           <div className="flex items-center gap-4">
@@ -125,6 +125,25 @@ export default function App() {
                   language={language}
                   onRateChange={setCustomUnitRate}
                 />
+              </motion.div>
+            ) : activeTab === 'financing' ? (
+              <motion.div
+                key="financing"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="h-full"
+              >
+                {adjustedData ? (
+                  <FinancingCalculator data={adjustedData} language={language} />
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-bg-natural/50">
+                    <Sun className="w-16 h-16 text-sage/20 mb-6 animate-pulse" />
+                    <h3 className="text-2xl font-bold text-earth/40 font-serif italic">
+                      {language === 'ur' ? 'تجزیہ درکار ہے' : 'Analysis Pending'}
+                    </h3>
+                  </div>
+                )}
               </motion.div>
             ) : adjustedData && (
               <motion.div

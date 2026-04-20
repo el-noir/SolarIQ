@@ -220,6 +220,14 @@ export default function Dashboard({ data, language, onRateChange }: DashboardPro
                {t.localizedIntel}
             </div>
             <h3 className="text-2xl font-bold font-serif mb-3 leading-tight">{t.environmentalTitle} {data.city}</h3>
+            {['Lahore', 'Faisalabad', 'Gujranwala', 'Multan'].includes(data.city) && (
+              <div className="mb-4 p-3 bg-white/10 rounded-2xl flex items-center gap-3 border border-white/20">
+                <span className="text-sun animate-pulse">●</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest leading-normal">
+                  {language === 'ur' ? 'سموگ الرٹ: موسم سرما میں پیداوار ۳۰٪ تک کم ہو سکتی ہے' : 'Smog Advisory: Winter yield may drop up to 30%'}
+                </span>
+              </div>
+            )}
             <p className="text-sm opacity-80 leading-relaxed font-medium">
               {t.dailyYield} {(data.systemSize * 4.2).toFixed(1)} {t.carbonText} {(data.monthlySavings/35).toFixed(0)} {t.treesText}
             </p>

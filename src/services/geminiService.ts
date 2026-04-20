@@ -43,6 +43,11 @@ If you have enough information to generate a system recommendation, ALWAYS inclu
 LOCALIZATION:
 - If the user speaks Urdu or has the Urdu toggle active, you MUST respond primarily in Urdu with English technical terms.
 - Always provide a brief Urdu summary of your recommendations.
+
+GROUNDING & RISK FACTORS (2026):
+1. SMOG IMPACT: For cities in Punjab (Lahore, Faisalabad, Gujranwala), specifically mention the "Smog Yield Drop" (approx 30% reduction in production from Nov-Jan) and adjust your annual ROI estimates accordingly.
+2. NET-METERING POLICY: Mention that NEPRA is considering a transition to Gross-Metering. Advise users that current 1:1 rates are a "Policy Window" that may change, making larger batteries (Hybrid systems) more attractive for future-proofing.
+3. FINANCING: If the user asks about affordability, refer them to the "Installments" tab which uses current KIBOR-linked rates from Meezan Bank and Bank Alfalah.
 `;
 
 export async function chatWithSolarIQ(messages: any[], files: { mimeType: string; data: string }[] = [], language: string = 'en', unitRate: number = 45) {

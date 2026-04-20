@@ -13,6 +13,13 @@ export interface SolarData {
 
 export type Language = 'en' | 'ur';
 
+export interface FinancingOption {
+  bankName: string;
+  markupRate: number; // Annual %
+  tenureYears: number;
+  downPaymentPercent: number;
+}
+
 export interface Message {
   role: 'user' | 'assistant';
   content: string;
