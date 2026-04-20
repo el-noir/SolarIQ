@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Georgia", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bg-natural: #F7F8F2;
+  --color-sage: #606C38;
+  --color-earth: #283618;
+  --color-sun: #D4A373;
+  --color-clay: #A98467;
+  --color-ai-bubble: #E9EDC9;
+}
+
+body {
+  @apply bg-bg-natural text-[#1C2312] font-sans;
+}
+
+.prose pre {
+  @apply bg-white border border-[#F1F1F1] rounded-lg p-4 font-mono text-xs;
+}
+
+.prose code {
+  @apply bg-[#FAFAF5] px-1 py-0.5 rounded text-sage font-mono text-xs;
+}
+
+.card-natural {
+  @apply bg-white rounded-[24px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[rgba(96,108,56,0.1)];
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-[#CCD5AE] rounded-full hover:bg-sage;
+}

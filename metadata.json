@@ -1,0 +1,6 @@
+{
+  "name": "SolarIQ Pakistan",
+  "description": "Pakistan's smartest solar advisor. Extract bill data, analyze roof photos, and get live ROI with Google Search grounding.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["vision", "search"]
+}
