@@ -91,23 +91,25 @@ export default function SolarScheduler({ data, language }: SolarSchedulerProps) 
   };
 
   return (
-    <div className="bg-white p-8 rounded-[40px] border border-black/5 shadow-sm space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-sage/10 pb-6">
-        <div>
-          <h3 className="text-2xl font-bold text-earth font-serif flex items-center gap-3">
-            <Clock className="w-6 h-6 text-sage" />
-            {t.title}
-          </h3>
-          <p className="text-xs text-sage font-bold mt-1 uppercase tracking-widest">{t.subtitle}</p>
+    <div className="card-premium space-y-12">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-sage/10 pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="w-1.5 h-8 bg-sun rounded-full" />
+             <h3 className="text-3xl sm:text-4xl font-extrabold text-earth leading-none font-serif">
+               {t.title}
+             </h3>
+          </div>
+          <p className="text-micro text-sage mb-1">{t.subtitle}</p>
         </div>
         
-        <div className="flex items-center gap-2 px-4 py-2 bg-sun/10 text-sun rounded-full text-[10px] font-black uppercase tracking-widest">
-           <Sun className="w-3 h-3" />
+        <div className="flex items-center gap-3 px-6 py-2 bg-sun/10 text-sun rounded-full text-[10px] font-black uppercase tracking-[0.2em] w-fit">
+           <Sun className="w-4 h-4" />
            {t.goldenHours}: 10am — 3pm
         </div>
       </div>
 
-      <div className="h-[300px] w-full mt-4">
+      <div className="h-[250px] sm:h-[300px] w-full mt-4">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
@@ -125,8 +127,9 @@ export default function SolarScheduler({ data, language }: SolarSchedulerProps) 
               dataKey="time" 
               axisLine={false} 
               tickLine={false} 
-              tick={{ fontSize: 10, fontWeight: 700, fill: '#A98467' }}
-              interval={3}
+              tick={{ fontSize: 9, fontWeight: 800, fill: '#A98467' }}
+              interval={language === 'ur' ? 4 : 3}
+              minTickGap={20}
             />
             <Tooltip content={<CustomTooltip />} />
             <Area 
@@ -152,23 +155,23 @@ export default function SolarScheduler({ data, language }: SolarSchedulerProps) 
         </ResponsiveContainer>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="space-y-4">
-           <h4 className="text-[10px] font-black uppercase tracking-widest text-clay">{t.smartSchedule}</h4>
-           <div className="space-y-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="space-y-6">
+           <h4 className="text-micro text-clay">{t.smartSchedule}</h4>
+           <div className="space-y-3">
               {[
                 { label: t.pumpLabel, time: "10:30 AM", status: "peak" as const },
-                { label: t.acLabel, time: "11:00 AM - 4:00 PM", status: "peak" as const },
+                { label: t.acLabel, time: "11-4 PM", status: "peak" as const },
                 { label: t.evLabel, time: "01:00 PM", status: "peak" as const }
               ].map((item, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-bg-natural rounded-2xl border border-black/5">
-                   <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-sage">
-                         <Zap className="w-4 h-4" />
+                <div key={i} className="flex items-center justify-between p-4 bg-bg-natural rounded-2xl border border-black/5 hover:border-sage/20 transition-colors">
+                   <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center text-sun shadow-sm">
+                         <Zap className="w-5 h-5 fill-current" />
                       </div>
-                      <span className="text-xs font-bold text-earth">{item.label}</span>
+                      <span className="text-sm font-bold text-earth">{item.label}</span>
                    </div>
-                   <div className="px-3 py-1 bg-sage/10 text-sage text-[9px] font-black rounded-full uppercase">
+                   <div className="px-3 py-1 bg-sage/10 text-sage text-[9px] font-black rounded-full uppercase tracking-widest">
                       {item.time}
                    </div>
                 </div>
@@ -176,14 +179,15 @@ export default function SolarScheduler({ data, language }: SolarSchedulerProps) 
            </div>
         </div>
 
-        <div className="bg-earth p-6 rounded-3xl text-white relative overflow-hidden group">
+        <div className="card-glass flex flex-col justify-center gap-6 group">
            <div className="relative z-10 flex items-start gap-4">
-              <Info className="w-5 h-5 text-sun shrink-0" />
-              <p className="text-[11px] leading-relaxed opacity-90 font-medium">
+              <div className="w-10 h-10 rounded-2xl bg-earth flex items-center justify-center shrink-0 shadow-lg shadow-earth/20">
+                <Info className="w-5 h-5 text-sun" />
+              </div>
+              <p className="text-[11px] leading-relaxed text-earth font-bold uppercase tracking-widest opacity-60">
                 {t.usageAdvice}
               </p>
            </div>
-           <Sun className="absolute -right-8 -bottom-8 w-32 h-32 text-white/5 group-hover:scale-110 transition-transform duration-700" />
         </div>
       </div>
     </div>

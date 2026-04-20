@@ -90,24 +90,29 @@ export default function FinancingCalculator({ data, language }: FinancingCalcula
   };
 
   return (
-    <div className="p-8 space-y-8 h-full bg-bg-natural/30 overflow-y-auto">
-      <div className="flex items-center justify-between border-b border-sage/10 pb-6">
-        <div>
-          <h2 className="text-3xl font-extrabold text-earth font-serif">
-            {t.title}
-          </h2>
-          <p className="text-sm text-sage font-medium mt-1">{t.subtitle}</p>
+    <div className="p-6 sm:p-12 space-y-12 h-full bg-bg-natural/30 overflow-y-auto no-scrollbar max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-sage/10 pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+             <div className="w-1.5 h-8 bg-sun rounded-full" />
+             <h2 className="text-4xl sm:text-5xl font-extrabold text-earth leading-none">
+               {t.title}
+             </h2>
+          </div>
+          <p className="text-xs font-bold text-sage uppercase tracking-[0.2em]">{t.subtitle}</p>
         </div>
-        <Landmark className="w-10 h-10 text-sage/20" />
+        <div className="w-16 h-16 rounded-3xl bg-white flex items-center justify-center shadow-xl shadow-earth/5 border border-black/5 shrink-0">
+          <Landmark className="w-8 h-8 text-sun" />
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Input Controls */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-white p-6 rounded-[32px] shadow-sm border border-black/5 space-y-6">
+        <div className="lg:col-span-1 space-y-8">
+          <div className="card-premium space-y-8">
             <div>
-              <label className="text-[10px] font-black uppercase tracking-widest text-clay mb-3 block">{t.bank}</label>
-              <div className="space-y-2">
+              <label className="text-micro mb-4 block text-clay">{t.bank}</label>
+              <div className="space-y-3">
                 {DEFAULT_BANKS.map((bank, i) => (
                   <button
                     key={i}
@@ -117,132 +122,137 @@ export default function FinancingCalculator({ data, language }: FinancingCalcula
                       setCustomDownPayment(bank.downPaymentPercent);
                     }}
                     className={cn(
-                      "w-full px-4 py-3 rounded-xl border text-left text-sm font-bold flex items-center justify-between transition-all",
+                      "w-full px-5 py-4 rounded-2xl border text-left text-sm font-bold flex items-center justify-between transition-all duration-300",
                       selectedBank.bankName === bank.bankName 
-                        ? "bg-sage border-sage text-white shadow-md shadow-sage/20" 
-                        : "bg-bg-natural border-black/5 text-earth hover:border-sage/30"
+                        ? "bg-earth border-earth text-white shadow-xl shadow-earth/20 -translate-y-1" 
+                        : "bg-bg-natural border-transparent text-earth hover:border-sage/30"
                     )}
                   >
                     <span className="truncate">{bank.bankName}</span>
-                    <span className="text-[10px] opacity-80">{bank.markupRate}%</span>
+                    <span className={cn("text-[10px] font-black tracking-widest", selectedBank.bankName === bank.bankName ? "text-sun" : "text-clay")}>{bank.markupRate}%</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div>
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-clay">{t.tenure}</label>
-                <span className="text-sm font-bold text-earth">{customTenure} Y</span>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-micro text-clay">{t.tenure}</label>
+                <span className="text-sm font-black text-earth bg-bg-natural px-3 py-1 rounded-lg">{customTenure} Y</span>
               </div>
               <input 
                 type="range" min="1" max="10" step="1" 
                 value={customTenure}
                 onChange={(e) => setCustomTenure(Number(e.target.value))}
-                className="w-full h-1.5 bg-bg-natural rounded-lg appearance-none cursor-pointer accent-sage"
+                className="w-full h-2 bg-bg-natural rounded-lg appearance-none cursor-pointer accent-earth transition-all"
               />
             </div>
 
-            <div>
-              <div className="flex justify-between items-center mb-3">
-                <label className="text-[10px] font-black uppercase tracking-widest text-clay">{t.downPayment}</label>
-                <span className="text-sm font-bold text-earth">{customDownPayment}%</span>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <label className="text-micro text-clay">{t.downPayment}</label>
+                <span className="text-sm font-black text-earth bg-bg-natural px-3 py-1 rounded-lg">{customDownPayment}%</span>
               </div>
               <input 
                 type="range" min="10" max="50" step="5" 
                 value={customDownPayment}
                 onChange={(e) => setCustomDownPayment(Number(e.target.value))}
-                className="w-full h-1.5 bg-bg-natural rounded-lg appearance-none cursor-pointer accent-sun"
+                className="w-full h-2 bg-bg-natural rounded-lg appearance-none cursor-pointer accent-sun transition-all"
               />
             </div>
           </div>
 
-          <div className="bg-earth p-6 rounded-[32px] text-white flex items-start gap-4">
+          <div className="card-glass flex items-start gap-4">
             <Info className="w-5 h-5 text-sun shrink-0" />
-            <p className="text-[10px] font-medium leading-relaxed opacity-80 italic">
+            <p className="text-[10px] font-bold leading-relaxed text-earth opacity-60 uppercase tracking-widest">
               {t.emiHelp}
             </p>
           </div>
         </div>
 
         {/* Results Area */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-white p-8 rounded-[40px] border border-black/5 shadow-sm"
-            >
-              <div className="flex items-center gap-2 mb-6 text-clay">
-                <CreditCard className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{t.monthlyInstallment}</span>
-              </div>
-              <p className="text-4xl font-extrabold text-earth font-serif">
-                {formatPKR(stats.emi)}
-              </p>
-              <div className="mt-4 p-3 bg-bg-natural rounded-xl flex items-center justify-between text-xs font-bold text-sage">
-                <span>{t.totalLoan}:</span>
-                <span>{formatPKR(stats.loanAmount)}</span>
-              </div>
-            </motion.div>
+        <div className="lg:col-span-2 space-y-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <MetricCard
+              icon={<CreditCard className="text-earth" />}
+              label={t.monthlyInstallment}
+              value={formatPKR(stats.emi)}
+              subValue={`${t.totalLoan}: ${formatPKR(stats.loanAmount)}`}
+              delay={0}
+            />
 
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bg-ai-bubble/40 p-8 rounded-[40px] border border-sage/10 shadow-sm"
-            >
-              <div className="flex items-center gap-2 mb-6 text-sage">
-                <TrendingDown className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{t.monthlySavings}</span>
-              </div>
-              <p className="text-4xl font-extrabold text-earth font-serif">
-                {formatPKR(data.monthlySavings)}
-              </p>
-              <div className="mt-4 p-3 bg-white/50 rounded-xl flex items-center justify-between text-xs font-bold text-earth/60">
-                <span>Monthly Bill Units:</span>
-                <span>{data.monthlyUnits}</span>
-              </div>
-            </motion.div>
+            <MetricCard
+              icon={<TrendingDown className="text-earth" />}
+              label={t.monthlySavings}
+              value={formatPKR(data.monthlySavings)}
+              subValue={`Impact on monthly bill units: ${data.monthlyUnits}`}
+              delay={0.1}
+            />
           </div>
 
           {/* Comparison Bar */}
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
             className={cn(
-              "p-8 rounded-[40px] relative overflow-hidden transition-colors border",
+              "card-premium p-10 relative overflow-hidden transition-all duration-700",
               stats.isProfitable 
-                ? "bg-sage text-white border-white/10" 
-                : "bg-clay/10 text-earth border-clay/20"
+                ? "bg-sage text-white border-none shadow-2xl shadow-sage/40" 
+                : "bg-ai-bubble/20 text-earth border-sage/10 shadow-xl"
             )}
           >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 relative z-10">
-              <div className="space-y-2">
-                <h3 className="text-sm font-black uppercase tracking-[0.2em] opacity-80">{t.netMonthly}</h3>
-                <p className="text-5xl font-black font-serif">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-12 relative z-10 text-right md:text-left">
+              <div className="space-y-4">
+                <h3 className="text-micro opacity-80" style={{ color: stats.isProfitable ? 'white' : 'inherit' }}>{t.netMonthly}</h3>
+                <p className="text-6xl font-black font-serif leading-none">
                   {stats.isProfitable ? "+" : ""}{formatPKR(stats.netImpact)}
                 </p>
-                <div className="flex items-center gap-2 text-xs font-bold pt-2">
-                   <div className={cn("w-2 h-2 rounded-full", stats.isProfitable ? "bg-ai-bubble" : "bg-red-500")} />
-                   {stats.isProfitable ? t.isProfitable : t.notProfitable}
+                <div className="flex items-center gap-3 text-xs font-bold pt-2 justify-end md:justify-start">
+                   <div className={cn("w-2.5 h-2.5 rounded-full", stats.isProfitable ? "bg-ai-bubble animate-pulse" : "bg-red-500")} />
+                   <span className="uppercase tracking-widest leading-none">{stats.isProfitable ? t.isProfitable : t.notProfitable}</span>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4">
-                 <div className="bg-black/20 backdrop-blur-md px-6 py-4 rounded-3xl border border-white/10">
-                    <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">{t.outOfPocket}</p>
-                    <p className="text-xl font-bold">{formatPKR(stats.downPayment)}</p>
+              <div className="flex flex-wrap gap-6 justify-end md:justify-start">
+                 <div className="bg-white/10 backdrop-blur-3xl px-8 py-6 rounded-[32px] border border-white/10 text-center">
+                    <p className="text-micro mb-2 opacity-60" style={{ color: stats.isProfitable ? 'white' : 'inherit' }}>{t.outOfPocket}</p>
+                    <p className="text-2xl font-bold font-serif">{formatPKR(stats.downPayment)}</p>
                  </div>
               </div>
             </div>
             
             <ArrowRightLeft className={cn(
-              "absolute -right-8 -bottom-8 w-48 h-48 opacity-10 rotate-12",
+              "absolute -right-8 -bottom-8 w-64 h-64 opacity-5 rotate-12 transition-transform duration-1000 group-hover:scale-110",
               stats.isProfitable ? "text-white" : "text-clay"
             )} />
           </motion.div>
         </div>
       </div>
     </div>
+  );
+}
+
+// Reuse MetricCard or import it - since it is simple let's keep a consistent copy here for independent components if needed
+function MetricCard({ icon, label, value, subValue, delay }: any) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="card-premium group relative overflow-hidden"
+    >
+      <div className="relative z-10">
+        <div className="w-14 h-14 rounded-2xl bg-bg-natural flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-700 ease-out-expo">
+          {icon}
+        </div>
+        <div className="space-y-1">
+          <p className="text-micro">{label}</p>
+          <p className="text-3xl font-bold text-earth font-serif tracking-tight">{value}</p>
+          <p className="text-xs text-sage font-bold opacity-40 uppercase tracking-widest">{subValue}</p>
+        </div>
+      </div>
+      <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-bg-natural rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl" />
+    </motion.div>
   );
 }

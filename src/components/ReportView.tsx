@@ -111,16 +111,16 @@ export default function ReportView({ data, language }: ReportViewProps) {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+    <div className="p-4 sm:p-12">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-6">
         <div>
-          <h2 className="text-2xl font-extrabold text-earth font-serif">{t.preview}</h2>
-          <p className="text-xs font-semibold text-sage uppercase tracking-widest mt-1">{t.groundedReport}</p>
+          <h2 className="text-3xl font-extrabold text-earth font-serif">{t.preview}</h2>
+          <p className="text-xs font-bold text-sage uppercase tracking-[0.2em] mt-1">{t.groundedReport}</p>
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <button
             onClick={shareOnWhatsApp}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-3 bg-[#25D366] text-white rounded-2xl hover:bg-[#128C7E] font-bold transition-all shadow-xl shadow-green-500/20 active:scale-95 text-sm"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#25D366] text-white rounded-2xl hover:bg-[#128C7E] font-bold transition-all shadow-xl shadow-green-500/20 active:scale-95 text-sm"
           >
             <MessageCircle className="w-5 h-5 fill-white" />
             <span>{t.shareWhatsApp}</span>
@@ -128,7 +128,7 @@ export default function ReportView({ data, language }: ReportViewProps) {
           <button
             onClick={handleDownload}
             disabled={isExporting}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-6 py-3 bg-earth text-white rounded-2xl hover:bg-sage disabled:opacity-30 font-bold transition-all shadow-xl shadow-earth/20 active:scale-95 text-sm"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-earth text-white rounded-2xl hover:bg-sage disabled:opacity-30 font-bold transition-all shadow-xl shadow-earth/20 active:scale-95 text-sm"
           >
             {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-5 h-5" />}
             {t.download}
@@ -137,12 +137,12 @@ export default function ReportView({ data, language }: ReportViewProps) {
       </div>
 
       <div className={cn(
-        "bg-[#E9EDC9]/30 p-12 rounded-[40px] overflow-y-auto max-h-[85vh] border border-sage/10",
+        "bg-[#E9EDC9]/20 p-4 sm:p-12 rounded-[40px] overflow-y-auto max-h-[85vh] border border-sage/10 no-scrollbar",
         language === 'ur' ? "text-right" : "text-left"
       )} dir={language === 'ur' ? 'rtl' : 'ltr'}>
         <div 
           ref={reportRef} 
-          className="bg-white w-full max-w-[800px] mx-auto min-h-[1100px] shadow-report p-16 text-earth relative overflow-hidden font-sans"
+          className="bg-white w-full max-w-[800px] mx-auto min-h-[1100px] shadow-report p-8 sm:p-16 text-earth relative overflow-hidden font-sans"
         >
           {/* Natural Tones Accents */}
           <div className="absolute top-0 left-0 w-full h-2 bg-earth" />
@@ -150,7 +150,7 @@ export default function ReportView({ data, language }: ReportViewProps) {
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4A37322] rounded-full -mr-16 -mt-16" />
 
           {/* Header */}
-          <div className="flex justify-between border-b-2 border-sage pb-12 mb-12 items-start">
+          <div className="flex flex-col md:flex-row justify-between border-b-2 border-sage pb-12 mb-12 items-start gap-8">
             <div>
               <div className="flex items-center gap-3 text-sage mb-4">
                 <div className="w-12 h-12 bg-earth rounded-2xl flex items-center justify-center shadow-lg shadow-earth/20">
@@ -163,7 +163,7 @@ export default function ReportView({ data, language }: ReportViewProps) {
                  <p className="text-clay font-black text-[10px] uppercase tracking-[0.3em]">{t.marketAnalysis}</p>
               </div>
             </div>
-            <div className="text-right" dir="ltr">
+            <div className="text-right w-full md:w-auto" dir="ltr">
               <p className="font-extrabold text-3xl font-serif text-earth mb-1">{t.proposal}</p>
               <div className="bg-bg-natural px-3 py-1 rounded-lg inline-block">
                  <p className="text-sage font-black tracking-[0.2em] text-[9px] uppercase">Ref: ID-{Math.floor(Math.random()*1000000)}</p>
@@ -181,57 +181,59 @@ export default function ReportView({ data, language }: ReportViewProps) {
               <div className="w-8 h-[2px] bg-sun" />
               {t.executiveTitle}
             </h3>
-            <p className="text-slate-600 leading-relaxed mb-10 text-lg">
-              {t.recommendationText} <strong className="text-earth">{data.systemSize}kW {data.systemType} {language ==='ur' ? 'سسٹم' : 'system'}</strong>. 
-              {language === 'en' ? `Our grounding engine confirms this configuration matches the high irradiation profile of ${data.city}. Anticipated full investment recovery within` : `ہمارا ہارڈ ویئر انجن اس بات کی تصدیق کرتا ہے کہ یہ سسٹم ${data.city} کی شمسی توانائی کے عین مطابق ہے۔ سرمایہ کاری کی واپسی کا متوقع وقت`} <strong className="text-earth">{data.paybackYears} {t.solarSeasons}</strong>.
-            </p>
-            <div className="grid grid-cols-3 gap-8">
+            <div className="prose prose-earth max-w-none">
+              <p className="text-slate-600 leading-relaxed mb-10 text-lg">
+                {t.recommendationText} <strong className="text-earth">{data.systemSize}kW {data.systemType} {language ==='ur' ? 'سسٹم' : 'system'}</strong>. 
+                {language === 'en' ? `Our grounding engine confirms this configuration matches the high irradiation profile of ${data.city}. Anticipated full investment recovery within` : `ہمارا ہارڈ ویئر انجن اس بات کی تصدیق کرتا ہے کہ یہ سسٹم ${data.city} کی شمسی توانائی کے عین مطابق ہے۔ سرمایہ کاری کی واپسی کا متوقع وقت`} <strong className="text-earth">{data.paybackYears} {t.solarSeasons}</strong>.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="bg-[#FAFAF5] p-6 rounded-3xl border border-sage/5">
-                <p className="text-[10px] text-clay font-black uppercase tracking-widest mb-2">{t.primaryInvestment}</p>
+                <p className="text-micro mb-2 text-clay">{t.primaryInvestment}</p>
                 <p className="text-2xl font-bold text-earth font-serif">{formatPKR(data.estimatedCost)}</p>
               </div>
               <div className="bg-[#FAFAF5] p-6 rounded-3xl border border-sage/5">
-                <p className="text-[10px] text-clay font-black uppercase tracking-widest mb-2">{t.targetSavings}</p>
+                <p className="text-micro mb-2 text-clay">{t.targetSavings}</p>
                 <p className="text-2xl font-bold text-sage font-serif">{formatPKR(data.monthlySavings)}</p>
               </div>
               <div className="bg-[#FAFAF5] p-6 rounded-3xl border border-sage/5">
-                <p className="text-[10px] text-clay font-black uppercase tracking-widest mb-2">{t.roiYield}</p>
+                <p className="text-micro mb-2 text-clay">{t.roiYield}</p>
                 <p className="text-2xl font-bold text-sun font-serif">{(100/data.paybackYears).toFixed(1)}% {language === 'ur' ? 'منافع' : 'ROI'}</p>
               </div>
             </div>
           </section>
 
           {/* Specs */}
-          <section className="mb-12 grid grid-cols-2 gap-12">
+          <section className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
-              <h3 className="text-xs font-black uppercase tracking-widest mb-6 flex items-center gap-2 text-earth">
+              <h3 className="text-micro mb-6 flex items-center gap-2 text-earth">
                 < Zap className="w-4 h-4 text-sun fill-sun/10" />
                 {t.hardwareConfig}
               </h3>
-              <div className="space-y-4 text-sm font-medium">
+              <div className="space-y-4 text-sm font-bold">
                 <div className="flex justify-between border-b border-sage/5 pb-2">
-                  <span className="text-sage">{t.modules}</span>
-                  <span className="text-earth font-bold">{data.panelsRecommended}</span>
+                  <span className="text-sage opacity-60 uppercase text-[10px]">{t.modules}</span>
+                  <span className="text-earth">{data.panelsRecommended}</span>
                 </div>
                 <div className="flex justify-between border-b border-sage/5 pb-2">
-                  <span className="text-sage">{t.inverter}</span>
-                  <span className="text-earth font-bold">{data.inverterRecommended}</span>
+                  <span className="text-sage opacity-60 uppercase text-[10px]">{t.inverter}</span>
+                  <span className="text-earth">{data.inverterRecommended}</span>
                 </div>
                 <div className="flex justify-between border-b border-sage/5 pb-2">
-                  <span className="text-sage">{t.architecture}</span>
-                  <span className="text-earth font-bold capitalize">{data.systemType}</span>
+                  <span className="text-sage opacity-60 uppercase text-[10px]">{t.architecture}</span>
+                  <span className="text-earth capitalize">{data.systemType}</span>
                 </div>
                 <div className="flex justify-between border-b border-sage/5 pb-2">
-                  <span className="text-sage">{t.groundingCheck}</span>
+                  <span className="text-sage opacity-60 uppercase text-[10px]">{t.groundingCheck}</span>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-green-600 font-extrabold uppercase text-[10px]">{t.verified}</span>
+                    <span className="text-green-600 font-black uppercase text-[10px] tracking-widest">{t.verified}</span>
                   </div>
                 </div>
               </div>
             </div>
             <div className="bg-[#F7F8F2] p-8 rounded-[32px] border border-sage/20 relative">
-              <p className="text-sage text-sm italic leading-relaxed relative z-10">
+              <p className="text-sage text-sm font-medium italic leading-relaxed relative z-10">
                 {language === 'en' ? `"Market Intel: Grounding engine suggests PKR ${(data.estimatedCost * 0.9).toLocaleString()} to ${(data.estimatedCost * 1.1).toLocaleString()} range from Tier-1 vendors in ${data.city} district as of today."` : `مارکیٹ معلومات: آج کے ریٹ کے مطابق ${data.city} میں ٹیئر ون وینڈرز سے اس سسٹم کی قیمت ${(data.estimatedCost * 0.9).toLocaleString()} سے ${(data.estimatedCost * 1.1).toLocaleString()} کے درمیان ہونے کی توقع ہے۔`}
               </p>
               <div className="absolute top-4 right-4 opacity-10">
