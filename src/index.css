@@ -13,6 +13,29 @@
   --color-sun: #D4A373;
   --color-clay: #A98467;
   --color-ai-bubble: #E9EDC9;
+
+  /* Map standard colors used in reports to hex for html2canvas compatibility */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+  
+  --color-green-50: #f0fdf4;
+  --color-green-500: #22c55e;
+  --color-green-600: #16a34a;
+  --color-red-500: #ef4444;
+  --color-yellow-50: #fefce8;
+  --color-yellow-500: #eab308;
+  --color-blue-600: #2563eb;
+
+  /* Safe Shadow for html2canvas */
+  --shadow-report: 0 30px 100px rgba(0,0,0,0.08);
 }
 
 body {

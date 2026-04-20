@@ -67,12 +67,12 @@ export default function ReportView({ data }: ReportViewProps) {
       <div className="bg-[#E9EDC9]/30 p-12 rounded-[40px] overflow-y-auto max-h-[85vh] border border-sage/10">
         <div 
           ref={reportRef} 
-          className="bg-white w-full max-w-[800px] mx-auto min-h-[1100px] shadow-[0_30px_100px_rgba(0,0,0,0.08)] p-16 text-earth relative overflow-hidden font-sans"
+          className="bg-white w-full max-w-[800px] mx-auto min-h-[1100px] shadow-report p-16 text-earth relative overflow-hidden font-sans"
         >
           {/* Natural Tones Accents */}
-          <div className="absolute top-0 left-0 w-full h-2 bg-sage" />
-          <div className="absolute bottom-0 left-0 w-full h-8 bg-earth" />
-          <div className="absolute top-0 right-0 w-32 h-32 bg-sun/5 rounded-full -mr-16 -mt-16 blur-3xl" />
+          <div className="absolute top-0 left-0 w-full h-2 bg-earth" />
+          <div className="absolute bottom-0 left-0 w-full h-8 bg-sage" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4A37322] rounded-full -mr-16 -mt-16" />
 
           {/* Header */}
           <div className="flex justify-between border-b border-sage/10 pb-12 mb-12 items-start">
@@ -146,7 +146,7 @@ export default function ReportView({ data }: ReportViewProps) {
                 </div>
               </div>
             </div>
-            <div className="bg-bg-natural/50 p-8 rounded-[32px] border border-sage/20 relative">
+            <div className="bg-[#F7F8F2] p-8 rounded-[32px] border border-sage/20 relative">
               <p className="text-sage text-sm italic leading-relaxed relative z-10">
                 "Market Intel: Grounding engine suggests PKR {(data.estimatedCost * 0.9).toLocaleString()} to {(data.estimatedCost * 1.1).toLocaleString()} range from Tier-1 vendors in {data.city} district as of today."
               </p>
