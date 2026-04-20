@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { SolarData } from './types';
+import { useState, useMemo } from 'react';
+import { SolarData, Language } from './types';
 import Chat from './components/Chat';
 import Dashboard from './components/Dashboard';
 import ReportView from './components/ReportView';
-import { Sun, LayoutDashboard, FileText, Menu, X } from 'lucide-react';
+import { Sun, LayoutDashboard, FileText, Menu, X, Globe } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -11,16 +11,39 @@ export default function App() {
   const [solarData, setSolarData] = useState<SolarData | null>(null);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'report'>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [language, setLanguage] = useState<Language>('en');
+  const [customUnitRate, setCustomUnitRate] = useState<number>(45);
+
+  const adjustedData = useMemo(() => {
+    if (!solarData) return null;
+    const rate = customUnitRate || 40;
+    // Recalculate savings based on unit rate
+    const monthlySavings = solarData.monthlyUnits * rate;
+    const paybackYears = Number((solarData.estimatedCost / (monthlySavings * 12)).toFixed(1));
+    return {
+      ...solarData,
+      monthlySavings,
+      paybackYears,
+      unitRate: rate
+    };
+  }, [solarData, customUnitRate]);
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-bg-natural font-sans overflow-hidden">
+    <div className={cn(
+      "flex flex-col lg:flex-row h-screen bg-bg-natural overflow-hidden",
+      language === 'ur' ? "font-urdu text-right" : "font-sans"
+    )} dir={language === 'ur' ? 'rtl' : 'ltr'}>
       {/* Sidebar - Chat (Always visible on large screens) */}
       <aside className={cn(
         "w-full lg:w-[400px] xl:w-[450px] flex-shrink-0 z-40 transition-transform duration-300",
-        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+        isMobileMenuOpen ? "translate-x-0" : (language === 'ur' ? "translate-x-full" : "-translate-x-full") + " lg:translate-x-0",
         "fixed lg:relative inset-0 lg:inset-auto h-full shadow-2xl lg:shadow-none"
       )}>
-        <Chat onDataUpdate={setSolarData} />
+        <Chat 
+          onDataUpdate={setSolarData} 
+          language={language}
+          unitRate={customUnitRate}
+        />
       </aside>
 
       {/* Main Content Area */}
@@ -53,7 +76,7 @@ export default function App() {
               )}
             >
               <LayoutDashboard className="w-4 h-4" />
-              <span>Dashboard</span>
+              <span>{language === 'ur' ? 'ڈیش بورڈ' : 'Dashboard'}</span>
             </button>
             <button
               onClick={() => setActiveTab('report')}
@@ -64,16 +87,25 @@ export default function App() {
               )}
             >
               <FileText className="w-4 h-4" />
-              <span>Proposal</span>
+              <span>{language === 'ur' ? 'پروپوزل' : 'Proposal'}</span>
             </button>
           </nav>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-end">
+            <button 
+              onClick={() => setLanguage(lang => lang === 'en' ? 'ur' : 'en')}
+              className="px-3 py-1.5 bg-earth shadow-lg shadow-earth/20 text-white rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-sage transition-all"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              {language === 'en' ? 'Urdu' : 'English'}
+            </button>
+            <div className="hidden md:flex flex-col items-end">
               <span className="text-[10px] font-bold text-sage uppercase tracking-widest">Market Feed</span>
-              <span className="text-xs text-clay font-medium">Real-time Grounding</span>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-sage animate-pulse" />
+                <span className="text-xs text-clay font-bold tracking-tighter">Verified Daily</span>
+              </div>
             </div>
-            <div className="w-2.5 h-2.5 rounded-full bg-sage shadow-[0_0_8px_rgba(96,108,56,0.6)]" />
           </div>
         </header>
 
@@ -88,9 +120,13 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.98 }}
                 className="h-full"
               >
-                <Dashboard data={solarData} />
+                <Dashboard 
+                  data={adjustedData} 
+                  language={language}
+                  onRateChange={setCustomUnitRate}
+                />
               </motion.div>
-            ) : solarData && (
+            ) : adjustedData && (
               <motion.div
                 key="report"
                 initial={{ opacity: 0, y: 10 }}
@@ -98,7 +134,7 @@ export default function App() {
                 exit={{ opacity: 0, y: 10 }}
                 className="h-full overflow-y-auto"
               >
-                <ReportView data={solarData} />
+                <ReportView data={adjustedData} language={language} />
               </motion.div>
             )}
           </AnimatePresence>

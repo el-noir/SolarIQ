@@ -2,22 +2,30 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, Paperclip, Loader2, User, Bot, Sun, FileText, Zap } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { cn } from '@/lib/utils';
-import { Message, SolarData } from '@/types';
+import { Message, SolarData, Language } from '@/types';
 import { chatWithSolarIQ } from '@/services/geminiService';
 
 interface ChatProps {
   onDataUpdate: (data: SolarData | null) => void;
+  language: Language;
+  unitRate: number;
 }
 
-export default function Chat({ onDataUpdate }: ChatProps) {
+export default function Chat({ onDataUpdate, language, unitRate }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Assalam-o-Alaikum! I am SolarIQ, your personal solar advisor. To get started, please either **upload your electricity bill photo** or tell me how many **units** you consume on average per month. Providing your **city** will also help me find current local prices.',
+      content: 'Assalam-o-Alaikum! I am SolarIQ, your personal solar advisor. To get started, please either **upload your electricity bill photo** or tell me how many **units** you consume on average per month. Providing your **city** will also help me find current local prices.\n\nآپ اپنے بجلی کے بل کی تصویر اپ لوڈ کر سکتے ہیں یا ماہانہ یونٹس بتا سکتے ہیں۔',
       timestamp: Date.now()
     }
   ]);
   const [input, setInput] = useState('');
+
+  const quickActions = [
+    { label: "2x AC (1.5T)", prompt: "I have two 1.5-ton Inverter ACs. How does this affect my system sizing?" },
+    { label: "Water Pump", prompt: "I have a 1HP water pump. What inverter capacity is required?" },
+    { label: "Current Rates?", prompt: "What are the current per-unit solar buyback rates in my city?" },
+  ];
   const [isLoading, setIsLoading] = useState(false);
   const [attachedFiles, setAttachedFiles] = useState<{ name: string; type: string; data: string }[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -54,7 +62,7 @@ export default function Chat({ onDataUpdate }: ChatProps) {
         data: f.data.split(',')[1] // Extract base64
       }));
 
-      const response = await chatWithSolarIQ(chatHistory, filesForGemini);
+      const response = await chatWithSolarIQ(chatHistory, filesForGemini, language, unitRate);
       
       const assistantMessage: Message = {
         role: 'assistant',
@@ -151,6 +159,17 @@ export default function Chat({ onDataUpdate }: ChatProps) {
       </div>
 
       <div className="p-6 border-t border-black/5 bg-white/60">
+        <div className="flex gap-2 overflow-x-auto pb-4 scrollbar-hide no-scrollbar">
+          {quickActions.map((action, i) => (
+            <button
+              key={i}
+              onClick={() => { setInput(action.prompt); }}
+              className="whitespace-nowrap px-4 py-2 bg-ai-bubble/50 border border-sage/10 text-earth rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-sage hover:text-white transition-all shadow-sm"
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
         {attachedFiles.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">
             {attachedFiles.map((f, i) => (

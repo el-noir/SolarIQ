@@ -33,20 +33,32 @@ If you have enough information to generate a system recommendation, ALWAYS inclu
   "estimatedCost": number (PKR),
   "paybackYears": number,
   "monthlySavings": number (PKR),
+  "monthlyUnits": number,
   "panelsRecommended": string,
   "inverterRecommended": string,
   "city": string,
   "systemType": "on-grid" | "hybrid" | "off-grid"
 }
+
+LOCALIZATION:
+- If the user speaks Urdu or has the Urdu toggle active, you MUST respond primarily in Urdu with English technical terms.
+- Always provide a brief Urdu summary of your recommendations.
 `;
 
-export async function chatWithSolarIQ(messages: any[], files: { mimeType: string; data: string }[] = []) {
+export async function chatWithSolarIQ(messages: any[], files: { mimeType: string; data: string }[] = [], language: string = 'en', unitRate: number = 45) {
   const model = "gemini-3-flash-preview";
   
   const contents = messages.map(m => ({
     role: m.role === 'user' ? 'user' : 'model',
     parts: [{ text: m.content }]
   }));
+
+  // Append context about current user settings
+  const contextMessage = `[SYSTEM CONTEXT: User has selected ${language === 'ur' ? 'Urdu' : 'English'} language. The current simulated ROI unit rate is PKR ${unitRate}/unit. If extracting data, use this unitRate to recalculate savings if needed.]`;
+  
+  if (contents.length > 0) {
+    contents[contents.length - 1].parts.push({ text: contextMessage });
+  }
 
   if (files.length > 0 && contents.length > 0) {
     const lastMessage = contents[contents.length - 1];
