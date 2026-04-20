@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, ShieldCheck, Phone, MapPin, Star, ExternalLink, Award, Info, MessageCircle } from 'lucide-react';
+import { Search, ShieldCheck, Phone, MapPin, Star, ExternalLink, Award, Info, MessageCircle, Loader2 } from 'lucide-react';
 import { SolarData, Language, Installer } from '@/types';
 import { motion, AnimatePresence } from 'motion/react';
 import { cn } from '@/lib/utils';
@@ -64,16 +64,19 @@ export default function InstallerFinder({ data, language, onSearch, isSearching 
   };
 
   return (
-    <div className="p-8 space-y-8 h-full bg-bg-natural/30 overflow-y-auto">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-sage/10 pb-8">
-        <div>
-          <h2 className="text-3xl font-extrabold text-earth font-serif">
+    <div className="p-6 sm:p-12 space-y-12 h-full bg-bg-natural/30 overflow-y-auto no-scrollbar max-w-7xl mx-auto">
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 border-b border-sage/10 pb-12">
+        <div className="space-y-4">
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-earth leading-none">
             {t.title}
           </h2>
-          <p className="text-sm text-sage font-medium mt-1">{t.subtitle}</p>
+          <div className="flex items-center gap-2 text-sage font-bold">
+             <ShieldCheck className="w-4 h-4 text-sun" />
+             <p className="text-xs uppercase tracking-widest leading-none">{t.subtitle}</p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2 bg-white p-2 rounded-[24px] shadow-sm border border-black/5 w-full md:w-auto">
+        <div className="flex items-center gap-2 bg-white p-3 rounded-3xl shadow-xl shadow-earth/5 border border-black/5 w-full lg:w-96">
           <div className="flex-1 flex items-center gap-3 px-4">
              <Search className="w-5 h-5 text-sage" />
              <input 
@@ -81,30 +84,39 @@ export default function InstallerFinder({ data, language, onSearch, isSearching 
                value={cityInput}
                onChange={(e) => setCityInput(e.target.value)}
                placeholder={t.searchPlaceholder}
-               className="bg-transparent border-none outline-none text-sm font-bold text-earth w-full"
+               className="bg-transparent border-none outline-none text-sm font-bold text-earth w-full placeholder:text-sage/40"
              />
           </div>
           <button 
             disabled={isSearching}
             onClick={handleSearch}
-            className="bg-earth text-white px-6 py-3 rounded-2xl font-bold text-xs hover:bg-sage transition-all disabled:opacity-50"
+            className="btn-primary px-8"
           >
-            {t.findPros}
+            {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : t.findPros}
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Info Column */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="bg-sage p-8 rounded-[40px] text-white space-y-4">
-             <div className="flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8 text-white" />
-                <h3 className="font-bold text-xl font-serif leading-tight">{t.verifiedTitle}</h3>
+        <div className="lg:col-span-1 space-y-8">
+          <div className="card-premium bg-earth text-white space-y-6">
+             <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center">
+                   <ShieldCheck className="w-7 h-7 text-sun" />
+                </div>
+                <h3 className="font-bold text-xl leading-tight">{t.verifiedTitle}</h3>
              </div>
-             <p className="text-xs leading-relaxed opacity-90 font-medium">
+             <p className="text-sm leading-relaxed opacity-70 font-medium">
                {t.verifiedText}
              </p>
+             <div className="pt-4 border-t border-white/10">
+                <p className="text-micro text-sun mb-2">AEDB Certification Check</p>
+                <div className="flex items-center gap-2">
+                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                   <span className="text-[10px] font-black uppercase tracking-widest">{language === 'ur' ? 'لائیو تصدیق جاری ہے' : 'Live Verification Active'}</span>
+                </div>
+             </div>
           </div>
 
           <div className="bg-sun/10 p-6 rounded-[32px] border border-sun/20 flex items-start gap-4">

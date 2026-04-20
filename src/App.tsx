@@ -129,9 +129,10 @@ export default function App() {
             {activeTab === 'chat' ? (
               <motion.div
                 key="chat-mobile"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full lg:hidden"
               >
                 <Chat 
@@ -148,6 +149,7 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full"
               >
                 <Dashboard 
@@ -160,9 +162,10 @@ export default function App() {
             ) : activeTab === 'financing' ? (
               <motion.div
                 key="financing"
-                initial={{ opacity: 0, x: 20 }}
+                initial={{ opacity: 0, x: 30 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
+                exit={{ opacity: 0, x: 30 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full"
               >
                 {adjustedData ? (
@@ -170,7 +173,7 @@ export default function App() {
                 ) : (
                   <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-bg-natural/50">
                     <Sun className="w-16 h-16 text-sage/20 mb-6 animate-pulse" />
-                    <h3 className="text-2xl font-bold text-earth/40 font-serif italic">
+                    <h3 className="text-3xl font-serif text-earth/20 italic">
                       {language === 'ur' ? 'تجزیہ درکار ہے' : 'Analysis Pending'}
                     </h3>
                   </div>
@@ -182,6 +185,7 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full"
               >
                 <InstallerFinder 
@@ -196,9 +200,10 @@ export default function App() {
             ) : adjustedData && (
               <motion.div
                 key="report"
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                exit={{ opacity: 0, y: 30 }}
+                transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 className="h-full overflow-y-auto"
               >
                 <ReportView data={adjustedData} language={language} />
@@ -208,28 +213,31 @@ export default function App() {
         </div>
 
         {/* Mobile Bottom Navigation */}
-        <nav className="fixed bottom-0 left-0 right-0 h-[80px] bg-white/90 backdrop-blur-xl border-t border-black/5 lg:hidden flex items-center justify-around px-2 z-50 rounded-t-[32px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <nav className="fixed bottom-0 left-0 right-0 h-[85px] bg-white/80 backdrop-blur-3xl border-t border-black/5 lg:hidden flex items-center justify-around px-4 z-50 rounded-t-[40px] shadow-[0_-20px_50px_rgba(40,54,24,0.08)] safe-bottom">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
               disabled={item.disabled}
               className={cn(
-                "flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-300",
+                "flex flex-col items-center gap-1.5 px-3 py-2 rounded-2xl transition-all duration-500 relative",
                 activeTab === item.id 
-                  ? "text-earth scale-110" 
-                  : "text-sage/60 hover:text-earth disabled:opacity-20"
+                  ? "text-earth" 
+                  : "text-sage/40 hover:text-earth disabled:opacity-20"
               )}
             >
               <div className={cn(
-                "p-2 rounded-xl transition-all",
-                activeTab === item.id ? "bg-earth text-white shadow-lg shadow-earth/20" : "bg-transparent"
+                "p-2.5 rounded-2xl transition-all duration-500",
+                activeTab === item.id ? "bg-earth text-white shadow-2xl shadow-earth/20 -translate-y-1" : "bg-transparent"
               )}>
                 <item.icon className="w-5 h-5" />
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+              <span className="text-[9px] font-black uppercase tracking-widest leading-none">
                 {item.label}
               </span>
+              {!adjustedData && item.id === 'chat' && (
+                 <div className="absolute top-1 right-2 w-2 h-2 bg-sun rounded-full animate-ping" />
+              )}
             </button>
           ))}
         </nav>

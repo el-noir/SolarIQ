@@ -150,20 +150,27 @@ export default function ReportView({ data, language }: ReportViewProps) {
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#D4A37322] rounded-full -mr-16 -mt-16" />
 
           {/* Header */}
-          <div className="flex justify-between border-b border-sage/10 pb-12 mb-12 items-start">
+          <div className="flex justify-between border-b-2 border-sage pb-12 mb-12 items-start">
             <div>
-              <div className="flex items-center gap-2 text-sage mb-2">
-                <Sun className="w-10 h-10 fill-sage/10" />
-                <span className="text-4xl font-extrabold tracking-tighter text-earth font-serif italic">SolarIQ<span className="text-sun">.pk</span></span>
+              <div className="flex items-center gap-3 text-sage mb-4">
+                <div className="w-12 h-12 bg-earth rounded-2xl flex items-center justify-center shadow-lg shadow-earth/20">
+                   <Sun className="w-8 h-8 text-white" />
+                </div>
+                <span className="text-4xl font-extrabold tracking-tighter text-earth font-serif">SolarIQ<span className="text-sun">.pk</span></span>
               </div>
-              <p className="text-clay font-bold text-xs uppercase tracking-[0.2em] ml-1">{t.marketAnalysis}</p>
+              <div className="flex items-center gap-2">
+                 <div className="w-1 h-3 bg-sun rounded-full" />
+                 <p className="text-clay font-black text-[10px] uppercase tracking-[0.3em]">{t.marketAnalysis}</p>
+              </div>
             </div>
             <div className="text-right" dir="ltr">
-              <p className="font-extrabold text-2xl font-serif text-earth">{t.proposal}</p>
-              <p className="text-sage font-bold tracking-widest text-[10px] uppercase">#{Math.floor(Math.random()*1000000)}</p>
-              <div className="flex items-center justify-end gap-1 text-clay mt-4 font-bold text-xs">
-                 <MapPin className="w-3 h-3" />
-                 <span className="uppercase">{data.city}, PK</span>
+              <p className="font-extrabold text-3xl font-serif text-earth mb-1">{t.proposal}</p>
+              <div className="bg-bg-natural px-3 py-1 rounded-lg inline-block">
+                 <p className="text-sage font-black tracking-[0.2em] text-[9px] uppercase">Ref: ID-{Math.floor(Math.random()*1000000)}</p>
+              </div>
+              <div className="flex items-center justify-end gap-2 text-earth mt-6 font-bold text-sm">
+                 <MapPin className="w-4 h-4 text-sun" />
+                 <span className="uppercase tracking-widest">{data.city}, PK</span>
               </div>
             </div>
           </div>
@@ -216,7 +223,10 @@ export default function ReportView({ data, language }: ReportViewProps) {
                 </div>
                 <div className="flex justify-between border-b border-sage/5 pb-2">
                   <span className="text-sage">{t.groundingCheck}</span>
-                  <span className="text-green-600 font-extrabold uppercase text-[10px]">{t.verified}</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-green-600 font-extrabold uppercase text-[10px]">{t.verified}</span>
+                  </div>
                 </div>
               </div>
             </div>

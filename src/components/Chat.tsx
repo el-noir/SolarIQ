@@ -17,7 +17,7 @@ export default function Chat({ onDataUpdate, language, unitRate, externalInput, 
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Assalam-o-Alaikum! I am SolarIQ, your personal solar advisor. To get started, please either **upload your electricity bill photo** or tell me how many **units** you consume on average per month. Providing your **city** will also help me find current local prices.\n\nآپ اپنے بجلی کے بل کی تصویر اپ لوڈ کر سکتے ہیں یا ماہانہ یونٹس بتا سکتے ہیں۔',
+      content: '### ☀️ Start Here / یہاں سے شروع کریں\n\nAssalam-o-Alaikum! I am SolarIQ, your personal solar advisor. To get started, please either **upload your electricity bill photo** or tell me how many **units** you consume on average per month.\n\nآپ اپنے بجلی کے بل کی تصویر اپ لوڈ کر سکتے ہیں یا ماہانہ یونٹس بتا سکتے ہیں۔',
       timestamp: Date.now()
     }
   ]);

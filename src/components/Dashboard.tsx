@@ -1,7 +1,9 @@
-import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock, Settings2, ShieldCheck, Gem } from 'lucide-react';
+import { useMemo } from 'react';
+import { Zap, TrendingUp, DollarSign, Calculator, Battery, Sun, MapPin, SlidersHorizontal, Clock, Settings2, ShieldCheck, Gem, Info, ArrowUpRight, BarChart3 } from 'lucide-react';
 import { SolarData, Language, SystemTier } from '@/types';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import SolarScheduler from './SolarScheduler';
+import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
 interface DashboardProps {
   data: SolarData | null;
@@ -45,7 +47,13 @@ const translations = {
     treesText: "carbon-equivalent trees monthly.",
     onGrid: "On-Grid",
     hybrid: "Hybrid",
-    offGrid: "Off-Grid"
+    offGrid: "Off-Grid",
+    savingsProjection: "25-Year Savings Projection",
+    cumulativeSavings: "Cumulative Savings",
+    futureValue: "25Y Potential Value",
+    whyPremium: "Why Premium?",
+    biFacialAdvantage: "Bifacial panels capture energy from both sides, increasing output by ~12% in Pakistan's dusty conditions.",
+    netMeteringTarget: "Net-Metering Ready"
   },
   ur: {
     overview: "سسٹم کا جائزہ",
@@ -81,7 +89,13 @@ const translations = {
     treesText: "درختوں کے برابر کاربن کی بچت ہوگی۔",
     onGrid: "آن گرڈ",
     hybrid: "ہائبرڈ",
-    offGrid: "آف گرڈ"
+    offGrid: "آف گرڈ",
+    savingsProjection: "۲۵ سالہ بچت کا تخمینہ",
+    cumulativeSavings: "کل بچت",
+    futureValue: "۲۵ سالہ ممکنہ بچت",
+    whyPremium: "پریمیم کیوں؟",
+    biFacialAdvantage: "بائی فیشل پینلز دونوں طرف سے بجلی بناتے ہیں، جس سے پاکستان کے گرد آلود ماحول میں پیداوار ۱۲ فیصد بڑھ جاتی ہے۔",
+    netMeteringTarget: "نیٹ میٹرنگ کے لیے تیار"
   }
 };
 
@@ -90,12 +104,60 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
 
   if (!data) {
     return (
-      <div className="h-full flex flex-col items-center justify-center p-4 sm:p-8 text-center bg-bg-natural/50">
-        <Sun className="w-12 h-12 sm:w-16 h-16 text-sage/20 mb-6 animate-pulse" />
-        <h3 className="text-xl sm:text-2xl font-bold text-earth/40 font-serif italic">{t.analysisPending}</h3>
-        <p className="max-w-xs mt-3 text-xs sm:text-sm text-sage/60 font-medium">
-          {t.uploadBill}
-        </p>
+      <div className="h-full overflow-hidden p-6 sm:p-12 bg-bg-natural/50 relative">
+        <div className="max-w-7xl mx-auto space-y-12">
+          {/* Header Skeleton */}
+          <div className="flex justify-between items-end">
+             <div className="space-y-4">
+               <div className="h-8 w-64 shimmer rounded-full" />
+               <div className="h-4 w-48 shimmer rounded-full opacity-50" />
+             </div>
+             <div className="h-10 w-32 shimmer rounded-2xl" />
+          </div>
+
+          {/* Metric Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+             {[1,2,3,4].map(i => (
+               <div key={i} className="h-48 shimmer rounded-[40px]" />
+             ))}
+          </div>
+
+          {/* Large Body Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+             <div className="lg:col-span-2 h-[450px] shimmer rounded-[48px]" />
+             <div className="h-[450px] shimmer rounded-[48px]" />
+          </div>
+        </div>
+
+        {/* Floating Modal Overlay - The actual CTA */}
+        <div className="absolute inset-0 flex items-center justify-center bg-bg-natural/40 backdrop-blur-[2px] z-20 p-6">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="card-premium max-w-md w-full text-center space-y-8"
+          >
+            <div className="w-24 h-24 bg-[#FAFAF5] rounded-full mx-auto flex items-center justify-center animate-float">
+               <Sun className="w-12 h-12 text-sun" />
+            </div>
+            <div className="space-y-3">
+              <h3 className="text-3xl font-serif text-earth">{t.analysisPending}</h3>
+              <p className="text-sm text-sage font-medium leading-relaxed">
+                {t.uploadBill}
+              </p>
+            </div>
+            
+            <div className="pt-4 grid grid-cols-2 gap-4">
+               <div className="p-4 bg-bg-natural rounded-2xl border border-sage/5">
+                  <p className="text-micro mb-2">{language === 'ur' ? 'سٹیپ ۱' : 'Step 1'}</p>
+                  <p className="text-[10px] font-bold">{language === 'ur' ? 'بل اپ لوڈ کریں' : 'Upload Bill'}</p>
+               </div>
+               <div className="p-4 bg-bg-natural rounded-2xl border border-sage/5">
+                  <p className="text-micro mb-2">{language === 'ur' ? 'سٹیپ ۲' : 'Step 2'}</p>
+                  <p className="text-[10px] font-bold">{language === 'ur' ? 'سولر پلان دیکھیں' : 'Get Proposal'}</p>
+               </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     );
   }
@@ -108,45 +170,66 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
     }).format(num);
   };
 
+  const savingsData = useMemo(() => {
+    const years = [1, 5, 10, 15, 20, 25];
+    const annualSavings = data.monthlySavings * 12;
+    // Assume 5% electricity cost inflation annually
+    return years.map(year => {
+      const inflationFactor = Math.pow(1.05, year);
+      const cumulative = annualSavings * ((Math.pow(1.05, year) - 1) / 0.05);
+      return {
+        year: `Year ${year}`,
+        savings: Math.round(cumulative),
+      };
+    });
+  }, [data.monthlySavings]);
+
   return (
-    <div className="p-4 sm:p-8 space-y-6 sm:space-y-8 overflow-y-auto h-full bg-bg-natural/50">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-earth font-serif">{t.overview}</h2>
-          <div className="flex items-center gap-2 text-sage text-[10px] sm:text-sm mt-1 sm:mt-2 font-medium">
-            <MapPin className={cn("w-3 h-3 sm:w-4 h-4 text-sun", language === 'ur' && "ml-2")} />
-            <span>{data.city}, {t.cityAnalysis}</span>
+    <div className="p-6 sm:p-12 space-y-12 overflow-y-auto h-full bg-bg-natural/50 max-w-7xl mx-auto no-scrollbar">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 border-b border-sage/10 pb-12">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-8 bg-sun rounded-full" />
+            <h2 className="text-4xl sm:text-5xl font-extrabold text-earth leading-none">{t.overview}</h2>
+          </div>
+          <div className="flex items-center gap-3 text-sage font-bold">
+            <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border border-black/5">
+              <MapPin className={cn("w-4 h-4 text-sun", language === 'ur' && "ml-1")} />
+              <span className="text-xs uppercase tracking-widest">{data.city}, Pakistan</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-sage/30" />
+            <span className="text-xs opacity-60 uppercase tracking-tighter">{t.cityAnalysis}</span>
           </div>
         </div>
-        <div className="w-fit px-4 py-1.5 bg-ai-bubble text-earth rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] shadow-sm border border-sage/10">
+        <div className="w-fit px-6 py-2 bg-earth text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-earth/10">
           {data.systemType === 'on-grid' ? t.onGrid : data.systemType === 'hybrid' ? t.hybrid : t.offGrid}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         <MetricCard
-          icon={<Zap className="text-sage" />}
+          icon={<Zap className="text-earth w-6 h-6" />}
           label={t.proposedSize}
           value={`${data.systemSize} kW`}
           subValue={t.peakGen}
           delay={0}
         />
         <MetricCard
-          icon={<DollarSign className="text-clay" />}
+          icon={<DollarSign className="text-earth w-6 h-6" />}
           label={t.investment}
           value={formatPKR(data.estimatedCost)}
           subValue={t.marketAvg}
           delay={0.1}
         />
         <MetricCard
-          icon={<TrendingUp className="text-sage" />}
+          icon={<TrendingUp className="text-earth w-6 h-6" />}
           label={t.annualSavings}
           value={formatPKR(data.monthlySavings * 12)}
           subValue={`${formatPKR(data.monthlySavings)} ${t.savedMonthly}`}
           delay={0.2}
         />
         <MetricCard
-          icon={<Calculator className="text-sun" />}
+          icon={<Calculator className="text-earth w-6 h-6" />}
           label={t.payback}
           value={`${data.paybackYears} ${language === 'ur' ? 'سال' : 'Years'}`}
           subValue={t.roi}
@@ -245,6 +328,107 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
         <SolarScheduler data={data} language={language} />
       </motion.div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <motion.div
+           initial={{ opacity: 0, x: -20 }}
+           animate={{ opacity: 1, x: 0 }}
+           transition={{ delay: 0.4 }}
+           className="lg:col-span-2 bg-white p-6 sm:p-8 rounded-[32px] border border-sage/10 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+               <div className="w-10 h-10 rounded-2xl bg-sun/10 flex items-center justify-center">
+                  <BarChart3 className="w-5 h-5 text-sun" />
+               </div>
+               <h3 className="font-bold text-earth text-lg font-serif">{t.savingsProjection}</h3>
+            </div>
+          </div>
+          
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={savingsData}>
+                <defs>
+                  <linearGradient id="colorSavings" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#606C38" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#606C38" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#eee" />
+                <XAxis 
+                  dataKey="year" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 10, fontWeight: 700, fill: '#606C38' }}
+                />
+                <YAxis 
+                  hide 
+                />
+                <Tooltip 
+                  contentStyle={{ 
+                    borderRadius: '16px', 
+                    border: 'none', 
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                    backgroundColor: '#fff'
+                  }}
+                  formatter={(val: number) => [formatPKR(val), t.cumulativeSavings]}
+                />
+                <Area 
+                  type="monotone" 
+                  dataKey="savings" 
+                  stroke="#606C38" 
+                  strokeWidth={4}
+                  fillOpacity={1} 
+                  fill="url(#colorSavings)" 
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div
+           initial={{ opacity: 0, x: 20 }}
+           animate={{ opacity: 1, x: 0 }}
+           transition={{ delay: 0.45 }}
+           className="bg-white p-8 rounded-[32px] border border-sage/10 shadow-sm flex flex-col"
+        >
+           <div className="flex items-center gap-2 mb-6">
+              <Info className="w-5 h-5 text-sun" />
+              <h3 className="font-bold text-earth text-lg font-serif">{t.localizedIntel}</h3>
+           </div>
+           
+           <div className="space-y-6 flex-1">
+              <div className="p-5 bg-ai-bubble/20 rounded-2xl border border-sage/5">
+                 <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-clay">{t.whyPremium}</span>
+                    <Gem className="w-4 h-4 text-sun" />
+                 </div>
+                 <p className="text-xs text-earth font-medium leading-relaxed">
+                    {t.biFacialAdvantage}
+                 </p>
+              </div>
+
+              <div className="p-5 bg-bg-natural rounded-2xl border border-sage/5">
+                 <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-clay">Policy Note</span>
+                    <ShieldCheck className="w-4 h-4 text-sage" />
+                 </div>
+                 <p className="text-xs text-earth font-medium leading-relaxed">
+                    {t.netMeteringTarget} - Optimized for AEDB Phase-2 Net-Metering compliance in {data.city}.
+                 </p>
+              </div>
+           </div>
+
+           <div className="mt-8 p-6 bg-earth text-white rounded-3xl overflow-hidden relative group cursor-pointer">
+              <div className="relative z-10">
+                 <p className="text-[9px] font-black uppercase tracking-widest text-ai-bubble/60 mb-1">{t.futureValue}</p>
+                 <p className="text-xl font-bold font-serif">{formatPKR(savingsData[savingsData.length-1].savings)}</p>
+                 <p className="text-[10px] mt-2 opacity-60">Over 25 year lifecycle at 5% infl.</p>
+              </div>
+              <ArrowUpRight className="absolute top-4 right-4 w-6 h-6 text-ai-bubble opacity-20 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+           </div>
+        </motion.div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <motion.div
            initial={{ opacity: 0, y: 20 }}
@@ -312,19 +496,22 @@ export default function Dashboard({ data, language, onRateChange, onTierChange }
 function MetricCard({ icon, label, value, subValue, delay }: any) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay }}
-      className="card-natural p-5 sm:p-7 group hover:bg-ai-bubble/20 transition-all duration-500 cursor-default"
+      transition={{ delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      className="card-premium group relative overflow-hidden"
     >
-      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-bg-natural flex items-center justify-center mb-4 sm:mb-5 group-hover:scale-110 transition-transform duration-500">
-        {icon}
+      <div className="relative z-10">
+        <div className="w-14 h-14 rounded-2xl bg-bg-natural flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-700 ease-out-expo">
+          {icon}
+        </div>
+        <div className="space-y-1">
+          <p className="text-micro">{label}</p>
+          <p className="text-3xl font-bold text-earth font-serif tracking-tight">{value}</p>
+          <p className="text-xs text-sage font-bold opacity-40 uppercase tracking-widest">{subValue}</p>
+        </div>
       </div>
-      <div>
-        <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] text-clay/60 mb-1">{label}</p>
-        <p className="text-xl sm:text-2xl font-bold text-earth my-0.5 sm:my-1 font-serif">{value}</p>
-        <p className="text-[10px] sm:text-xs text-sage font-medium opacity-70">{subValue}</p>
-      </div>
+      <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-bg-natural rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl" />
     </motion.div>
   );
 }
